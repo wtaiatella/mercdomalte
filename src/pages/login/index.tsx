@@ -5,10 +5,10 @@ const Title = styled.h1`
 	color: ${({ theme }) => theme.colors.primary};
 `;
 
-export default function Home() {
+export default function Login() {
 	return (
 		<>
-			<Title>home</Title>
+			<Title>login</Title>
 		</>
 	);
 }
