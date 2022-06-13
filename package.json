@@ -12,9 +12,12 @@
 		"start": "next start"
 	},
 	"dependencies": {
+		"@ant-design/icons": "^4.7.0",
+		"antd": "4.21.0",
 		"next": "latest",
 		"react": "^18.1.0",
 		"react-dom": "^18.1.0",
+		"react-icons": "^4.4.0",
 		"react-is": "^18.1.0",
 		"styled-components": "^5.3.5"
 	},
