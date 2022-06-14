@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import { Container, Content } from './styles';
 import { SignInButton } from '../SignInButton/Index';
+import { Input } from 'antd';
+
+const { Search } = Input;
 
 export function Header() {
 	const onSearch = (value) => console.log(value);
@@ -17,9 +20,10 @@ export function Header() {
 					/>
 				</a>
 
-				<input
+				<Search
 					className='busca'
 					placeholder='Procure seu arquivo'
+					allowClear
 					onChange={onSearch}
 					style={{
 						width: 600,
