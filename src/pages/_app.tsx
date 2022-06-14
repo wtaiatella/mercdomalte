@@ -1,6 +1,7 @@
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { GlobalStyle } from '../styles/global';
 import { Header } from '../components/Header';
+import 'antd/dist/antd.css';
 
 const theme = {
 	colors: {
