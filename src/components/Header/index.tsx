@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { Container, Content } from './styles';
 import { SignInButton } from '../SignInButton/Index';
 import { Input } from 'antd';
@@ -11,14 +12,16 @@ export function Header() {
 	return (
 		<Container>
 			<Content>
-				<a href='./'>
-					<Image
-						src='/images/logo.png'
-						alt='logo Mercado do Malte'
-						width='107'
-						height='87'
-					/>
-				</a>
+				<Link href='/'>
+					<a>
+						<Image
+							src='/images/logo.png'
+							alt='logo Mercado do Malte'
+							width='107'
+							height='87'
+						/>
+					</a>
+				</Link>
 
 				<Search
 					className='busca'
