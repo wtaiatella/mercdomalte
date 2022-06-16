@@ -1,6 +1,8 @@
 import Head from 'next/head';
-import { useContext } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
+
 import { Form, Input, Button, Checkbox } from 'antd';
 
 import { LockOutlined } from '@ant-design/icons';
@@ -12,6 +14,7 @@ import LostPaswordModal from '../lostpasswordmodal';
 
 export default function Login() {
 	const { isModalVisible, setIsModalVisible } = useContext(UserContext);
+	const router = useRouter();
 
 	const showModal = () => {
 		setIsModalVisible(true);
@@ -19,10 +22,12 @@ export default function Login() {
 
 	const onFinish = (values: any) => {
 		console.log('Received values of form: ', values);
+		router.push('/minhaconta');
 	};
 
 	const onFinishFailed = (errorInfo: any) => {
 		console.log('Failed:', errorInfo);
+		router.push('/minhaconta');
 	};
 
 	return (
