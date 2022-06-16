@@ -1,18 +1,17 @@
 import Head from 'next/head';
 import { useContext } from 'react';
-import Link from 'next/link';
-import { Form, Input, Button, Checkbox } from 'antd';
 
-import { LockOutlined } from '@ant-design/icons';
-import { MdOutlineEmail } from 'react-icons/md';
+import { Form, Input, Button } from 'antd';
+import LostPaswordModal from '../lostpasswordmodal';
+import { UserContext } from '../../contexts/UserContext';
 
 import { Container, Content } from './styles';
-import { UserContext } from '../../contexts/UserContext';
-import LostPaswordModal from '../lostpasswordmodal';
 
-export default function Login() {
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { MdOutlineEmail } from 'react-icons/md';
+
+export default function Register() {
 	const { isModalVisible, setIsModalVisible } = useContext(UserContext);
-
 	const showModal = () => {
 		setIsModalVisible(true);
 	};
@@ -28,25 +27,45 @@ export default function Login() {
 	return (
 		<>
 			<Head>
-				<title>MdM - Login</title>
+				<title>MdM - Cadastro</title>
 			</Head>
 			<Container>
 				<Content>
-					<h1>Identificação do usuário</h1>
+					<h1>Cadastro de usuário</h1>
 					<p>
 						Faça o seu login e tenha acesso a todos os documentos do
 						site.
 					</p>
 					<Form
-						name='login'
-						className='login-form'
-						initialValues={{ remember: true }}
+						name='register'
+						className='register-form'
+						initialValues={{ remember: false }}
 						labelCol={{ span: 5 }}
 						wrapperCol={{ span: 16 }}
 						onFinish={onFinish}
 						onFinishFailed={onFinishFailed}
 						size='large'
 					>
+						<Form.Item
+							label='Nome'
+							name='name'
+							rules={[
+								{
+									required: true,
+									type: 'string',
+									message: 'Por favor, digite seu nome',
+								},
+							]}
+						>
+							<Input
+								prefix={
+									<UserOutlined className='site-form-item-icon' />
+								}
+								placeholder='Digite seu nome'
+								allowClear
+							/>
+						</Form.Item>
+
 						<Form.Item
 							label='E-mail'
 							name='email'
@@ -66,13 +85,14 @@ export default function Login() {
 								allowClear
 							/>
 						</Form.Item>
+
 						<Form.Item
-							label='Password'
-							name='password'
+							label='Senha'
+							name='passwordMain'
 							rules={[
 								{
 									required: true,
-									message: 'Por favor, digite seu password!',
+									message: 'Por favor, digite sua senha!',
 								},
 							]}
 						>
@@ -80,29 +100,28 @@ export default function Login() {
 								prefix={
 									<LockOutlined className='site-form-item-icon' />
 								}
-								placeholder='Password'
+								placeholder='Crie sua senha'
 								allowClear
 							/>
 						</Form.Item>
 
 						<Form.Item
-							className='formOptions'
 							wrapperCol={{ offset: 5 }}
+							name='passwordRepeate'
+							rules={[
+								{
+									required: true,
+									message: 'Os campos não coincidem.',
+								},
+							]}
 						>
-							<Form.Item
-								name='remember'
-								valuePropName='checked'
-								noStyle
-							>
-								<Checkbox>Lembrar-me</Checkbox>
-							</Form.Item>
-
-							<Button
-								onClick={showModal}
-								className='login-form-forgot'
-							>
-								Esqueceu a senha?
-							</Button>
+							<Input.Password
+								prefix={
+									<LockOutlined className='site-form-item-icon' />
+								}
+								placeholder='Confirme sua senha'
+								allowClear
+							/>
 						</Form.Item>
 
 						<Form.Item wrapperCol={{ offset: 5 }}>
@@ -111,9 +130,12 @@ export default function Login() {
 								htmlType='submit'
 								className='login-form-button'
 							>
-								Log in
+								Registrar
 							</Button>
-							<Link href='/register'>Registre agora!</Link>
+							<Button onClick={showModal}>
+								E-mail ja cadastrado! Perdeu a senha? Clique
+								aqui.
+							</Button>
 						</Form.Item>
 					</Form>
 				</Content>
