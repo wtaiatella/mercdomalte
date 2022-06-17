@@ -8,7 +8,7 @@ import { Form, Input, Button, Checkbox } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { MdOutlineEmail } from 'react-icons/md';
 
-import { Container, Content } from './styles';
+import { Container } from './styles';
 import { UserContext } from '../../contexts/UserContext';
 import LostPaswordModal from '../lostpasswordmodal';
 
@@ -22,12 +22,12 @@ export default function Login() {
 
 	const onFinish = (values: any) => {
 		console.log('Received values of form: ', values);
-		router.push('/minhaconta');
+		router.push('/myaccount');
 	};
 
 	const onFinishFailed = (errorInfo: any) => {
 		console.log('Failed:', errorInfo);
-		router.push('/minhaconta');
+		router.push('/myaccount');
 	};
 
 	return (
@@ -36,92 +36,90 @@ export default function Login() {
 				<title>MdM - Login</title>
 			</Head>
 			<Container>
-				<Content>
-					<h1>Identificação do usuário</h1>
-					<p>
-						Faça o seu login e tenha acesso a todos os documentos do
-						site.
-					</p>
-					<Form
-						name='login'
-						className='login-form'
-						initialValues={{ remember: true }}
-						labelCol={{ span: 5 }}
-						wrapperCol={{ span: 16 }}
-						onFinish={onFinish}
-						onFinishFailed={onFinishFailed}
-						size='large'
+				<h1>Identificação do usuário</h1>
+				<p>
+					Faça o seu login e tenha acesso a todos os documentos do
+					site.
+				</p>
+				<Form
+					name='login'
+					className='login-form'
+					initialValues={{ remember: true }}
+					labelCol={{ span: 5 }}
+					wrapperCol={{ span: 16 }}
+					onFinish={onFinish}
+					onFinishFailed={onFinishFailed}
+					size='large'
+				>
+					<Form.Item
+						label='E-mail'
+						name='email'
+						rules={[
+							{
+								required: true,
+								type: 'email',
+								message: 'Por favor, digite seu e-mail',
+							},
+						]}
+					>
+						<Input
+							prefix={
+								<MdOutlineEmail className='site-form-item-icon' />
+							}
+							placeholder='Digite seu e-mail'
+							allowClear
+						/>
+					</Form.Item>
+					<Form.Item
+						label='Password'
+						name='password'
+						rules={[
+							{
+								required: true,
+								message: 'Por favor, digite seu password!',
+							},
+						]}
+					>
+						<Input.Password
+							prefix={
+								<LockOutlined className='site-form-item-icon' />
+							}
+							placeholder='Password'
+							allowClear
+						/>
+					</Form.Item>
+
+					<Form.Item
+						className='formOptions'
+						wrapperCol={{ offset: 5 }}
 					>
 						<Form.Item
-							label='E-mail'
-							name='email'
-							rules={[
-								{
-									required: true,
-									type: 'email',
-									message: 'Por favor, digite seu e-mail',
-								},
-							]}
+							name='remember'
+							valuePropName='checked'
+							noStyle
 						>
-							<Input
-								prefix={
-									<MdOutlineEmail className='site-form-item-icon' />
-								}
-								placeholder='Digite seu e-mail'
-								allowClear
-							/>
-						</Form.Item>
-						<Form.Item
-							label='Password'
-							name='password'
-							rules={[
-								{
-									required: true,
-									message: 'Por favor, digite seu password!',
-								},
-							]}
-						>
-							<Input.Password
-								prefix={
-									<LockOutlined className='site-form-item-icon' />
-								}
-								placeholder='Password'
-								allowClear
-							/>
+							<Checkbox>Lembrar-me</Checkbox>
 						</Form.Item>
 
-						<Form.Item
-							className='formOptions'
-							wrapperCol={{ offset: 5 }}
+						<Button
+							onClick={showModal}
+							className='login-form-forgot'
 						>
-							<Form.Item
-								name='remember'
-								valuePropName='checked'
-								noStyle
-							>
-								<Checkbox>Lembrar-me</Checkbox>
-							</Form.Item>
+							Esqueceu a senha?
+						</Button>
+					</Form.Item>
 
-							<Button
-								onClick={showModal}
-								className='login-form-forgot'
-							>
-								Esqueceu a senha?
-							</Button>
-						</Form.Item>
-
-						<Form.Item wrapperCol={{ offset: 5 }}>
-							<Button
-								type='primary'
-								htmlType='submit'
-								className='login-form-button'
-							>
-								Log in
-							</Button>
-							<Link href='/register'>Registre agora!</Link>
-						</Form.Item>
-					</Form>
-				</Content>
+					<Form.Item wrapperCol={{ offset: 5 }}>
+						<Button
+							type='primary'
+							htmlType='submit'
+							className='login-form-button'
+						>
+							Log in
+						</Button>
+						<Link href='/register'>Registre agora!</Link>
+					</Form.Item>
+				</Form>
 			</Container>
 
 			<LostPaswordModal isOpen={isModalVisible} />

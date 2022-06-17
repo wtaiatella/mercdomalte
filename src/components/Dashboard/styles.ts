@@ -1,17 +1,33 @@
 import styled from 'styled-components';
 
-export const Container = styled.main`
-	background-image: url('/images/bg-site.jpg');
-	background-repeat: repeat;
-	height: calc(100vh - 93px - 2.6rem);
-`;
+export const Container = styled.div`
+	.ant-table {
+		background-color: rgba(0, 0, 0, 0) !important;
+	}
 
-export const Content = styled.div`
-	max-width: 1120px;
-	margin: 0 auto;
-	padding: 2.5rem 1rem;
-
-	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	gap: 1rem;
+	table {
+		thead {
+			tr {
+				th {
+					background-color: rgba(0, 0, 0, 0) !important;
+					border-bottom: 2px solid #857b7b;
+					.ant-table-cell:before {
+						width: 3px;
+					}
+				}
+				th:before {
+					width: 3px !important;
+					background-color: #857b7b !important;
+				}
+			}
+		}
+		tbody {
+			tr {
+				td {
+					background-color: rgba(0, 0, 0, 0) !important;
+					border-bottom: 1px solid #857b7b;
+				}
+			}
+		}
+	}
 `;

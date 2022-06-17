@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
+import styled from 'styled-components';
 
 export const GlobalStyle = createGlobalStyle`
 
@@ -65,6 +66,8 @@ button {
 	cursor: not-allowed;
 }
 
+
+	
 .react-modal-overlay {
 background: rgba(0, 0, 0, 0.5);
 position: fixed;
@@ -102,4 +105,22 @@ justify-content: center;
 	}
 }
 
+.ant-dropdown {
+	.ant-input-affix-wrapper {
+		display: flex !important;
+	}
+}
+
+`;
+
+export const Container = styled.main`
+	background-image: url('/images/bg-site.jpg');
+	background-repeat: repeat;
+	height: 100vh;
+`;
+
+export const Content = styled.div`
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 1rem;
 `;
