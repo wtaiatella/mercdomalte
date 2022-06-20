@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
 	.ant-table {
-		background-color: rgba(1, 1, 1, 0) !important;
+		background-color: rgba(0, 0, 0, 0) !important;
 	}
 
 	table {
@@ -30,3 +30,4 @@ export const Container = styled.div`
 			}
 		}
 	}
+`;
