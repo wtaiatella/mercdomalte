@@ -5,6 +5,9 @@ import { Container } from './styles';
 export default function Home() {
 	return (
 		<>
+            <Head>
+				<title>Mercado do Malte</title>
+			</Head>
 			<Container>
 				<h1>Tabela de Arquivos</h1>
 				<p>

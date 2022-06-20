@@ -1,4 +1,5 @@
 import Head from 'next/head';
+
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
@@ -27,6 +28,7 @@ export default function Login() {
 
 	const onFinishFailed = (errorInfo: any) => {
 		console.log('Failed:', errorInfo);
+
 		router.push('/myaccount');
 	};
 
@@ -123,6 +125,7 @@ export default function Login() {
 			</Container>
 
 			<LostPaswordModal isOpen={isModalVisible} />
+
 		</>
 	);
 }
