@@ -5,7 +5,7 @@ import LoginForm from '../../components/LoginForm';
 export default function Form() {
 	return (
 		<>
-			<div
+			<main
 				style={{
 					width: '500px',
 					margin: '0 auto',
@@ -18,7 +18,7 @@ export default function Form() {
 					site.
 				</TextBlock>
 				<LoginForm />
-			</div>
+			</main>
 		</>
 	);
 }

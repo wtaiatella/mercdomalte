@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Container = styled.div`
+export const Container = styled.header`
 	padding: 1.3rem 1.5rem;
 	display: flex;
 	align-items: center;
