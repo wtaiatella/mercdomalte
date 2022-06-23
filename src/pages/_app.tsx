@@ -1,6 +1,8 @@
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
-import { GlobalStyle } from '../styles/global';
+import { GlobalStyle, Container, Content } from '../styles/global';
 import { Header } from '../components/Header';
+import 'antd/dist/antd.css';
+import { UserStorage } from '../contexts/UserContext';
 
 const theme = {
 	colors: {
@@ -11,11 +13,17 @@ const theme = {
 export default function App({ Component, pageProps }) {
 	return (
 		<>
-			<GlobalStyle />
-			<ThemeProvider theme={theme}>
-				<Header />
-				<Component {...pageProps} />
-			</ThemeProvider>
+			<UserStorage>
+				<GlobalStyle />
+				<ThemeProvider theme={theme}>
+					<Container>
+						<Content>
+							<Header />
+							<Component {...pageProps} />
+						</Content>
+					</Container>
+				</ThemeProvider>
+			</UserStorage>
 		</>
 	);
 }

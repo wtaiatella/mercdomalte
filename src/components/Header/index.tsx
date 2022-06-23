@@ -1,14 +1,18 @@
 import Image from 'next/image';
-import { Container, Content } from './styles';
+import Link from 'next/link';
+import { Container } from './styles';
 import { SignInButton } from '../SignInButton/Index';
+import { Input } from 'antd';
+
+const { Search } = Input;
 
 export function Header() {
 	const onSearch = (value) => console.log(value);
 
 	return (
 		<Container>
-			<Content>
-				<a href='./'>
+			<Link href='/'>
+				<a>
 					<Image
 						src='/images/logo.png'
 						alt='logo Mercado do Malte'
@@ -16,17 +20,18 @@ export function Header() {
 						height='87'
 					/>
 				</a>
+			</Link>
 
-				<input
-					className='busca'
-					placeholder='Procure seu arquivo'
-					onChange={onSearch}
-					style={{
-						width: 600,
-					}}
-				/>
-				<SignInButton />
-			</Content>
+			<Search
+				className='busca'
+				placeholder='Procure seu arquivo'
+				allowClear
+				onChange={onSearch}
+				style={{
+					width: 600,
+				}}
+			/>
+			<SignInButton />
 		</Container>
 	);
 }
