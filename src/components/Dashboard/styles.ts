@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
+	padding: 0rem 1rem;
+
 	.ant-table {
 		background-color: rgba(0, 0, 0, 0) !important;
 	}
