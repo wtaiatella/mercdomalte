@@ -10,7 +10,7 @@ export default function Home() {
 				<title>Mercado do Malte</title>
 			</Head>
 			<div>
-				<Title>Tabela de Arquivos</Title>
+				<Title>Tabela de Arquivos!</Title>
 				<TextBlock>
 					Fala cervejeiro! Estamos montando a maior biblioteca
 					cervejeira online para facilitar a sua sede por informações.
