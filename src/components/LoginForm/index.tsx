@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
@@ -7,11 +8,11 @@ import { Form, Input, Button, Checkbox } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { MdOutlineEmail } from 'react-icons/md';
 
-import { Container } from '../../styles/loginstyles';
+import { Container } from './styles';
 import { UserContext } from '../../contexts/UserContext';
-import LostPaswordModal from '../../components/LostPasswordModal';
-import { Title } from '../../components/Common/Title';
-import { TextBlock } from '../../components/Common/TextBlock';
+import LostPaswordModal from '../LostPasswordModal';
+import { Title } from '../Common/Title';
+import { TextBlock } from '../Common/TextBlock';
 
 export default function LoginForm() {
 	const { isModalVisible, setIsModalVisible } = useContext(UserContext);

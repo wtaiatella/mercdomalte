@@ -5,6 +5,7 @@ import type { ColumnsType, ColumnType } from 'antd/lib/table';
 import type { FilterConfirmProps } from 'antd/lib/table/interface';
 import React, { useRef, useState, ReactNode } from 'react';
 import Highlighter from 'react-highlight-words';
+
 import { Container } from './styles';
 
 interface DataType {
@@ -17,7 +18,7 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-export function Dashboard() {
+export function UserDashboard() {
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef<InputRef>(null);
@@ -68,7 +69,7 @@ export function Dashboard() {
 		setSearchText('');
 	};
 
-	const handleDownload = (key: React.Key) => {
+	const handleDelete = (key: React.Key) => {
 		const downloadData = data.filter((item) => item.key === key);
 		console.log(downloadData[0].title);
 		<Popconfirm title='Download de arquivo' onConfirm={() => {}}>
@@ -218,10 +219,10 @@ export function Dashboard() {
 						type='link'
 						size='small'
 						onClick={() => {
-							handleDownload(record.key);
+							handleDelete(record.key);
 						}}
 					>
-						Download
+						Apagar
 					</Button>
 				) : null,
 		},
