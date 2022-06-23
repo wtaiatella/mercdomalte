@@ -2,10 +2,10 @@ import Head from 'next/head';
 import { useContext } from 'react';
 
 import { Form, Input, Button } from 'antd';
-import LostPaswordModal from '../lostpasswordmodal';
+import LostPaswordModal from '../../components/LostPasswordModal';
 import { UserContext } from '../../contexts/UserContext';
 
-import { Container } from './styles';
+import { Container } from '../../styles/registerstyles';
 
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { MdOutlineEmail } from 'react-icons/md';

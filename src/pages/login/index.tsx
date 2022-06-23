@@ -1,5 +1,3 @@
-import Head from 'next/head';
-
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
@@ -9,11 +7,13 @@ import { Form, Input, Button, Checkbox } from 'antd';
 import { LockOutlined } from '@ant-design/icons';
 import { MdOutlineEmail } from 'react-icons/md';
 
-import { Container } from './styles';
+import { Container } from '../../styles/loginstyles';
 import { UserContext } from '../../contexts/UserContext';
-import LostPaswordModal from '../lostpasswordmodal';
+import LostPaswordModal from '../../components/LostPasswordModal';
+import { Title } from '../../components/Common/Title';
+import { TextBlock } from '../../components/Common/TextBlock';
 
-export default function Login() {
+export default function LoginForm() {
 	const { isModalVisible, setIsModalVisible } = useContext(UserContext);
 	const router = useRouter();
 
@@ -28,21 +28,17 @@ export default function Login() {
 
 	const onFinishFailed = (errorInfo: any) => {
 		console.log('Failed:', errorInfo);
-
 		router.push('/myaccount');
 	};
 
 	return (
 		<>
-			<Head>
-				<title>MdM - Login</title>
-			</Head>
 			<Container>
-				<h1>Identificação do usuário</h1>
-				<p>
+				<Title>Identificação do usuário</Title>
+				<TextBlock>
 					Faça o seu login e tenha acesso a todos os documentos do
 					site.
-				</p>
+				</TextBlock>
 				<Form
 					name='login'
 					className='login-form'
@@ -125,7 +121,6 @@ export default function Login() {
 			</Container>
 
 			<LostPaswordModal isOpen={isModalVisible} />
-
 		</>
 	);
 }

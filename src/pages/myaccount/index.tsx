@@ -4,7 +4,7 @@ import { MenuProps, Space } from 'antd';
 import { Layout, Menu } from 'antd';
 import { ProfileOutlined, UserOutlined } from '@ant-design/icons';
 
-import { Container } from './styles';
+import { Container } from '../../styles/myaccountstyles';
 import { UserDashboard } from '../../components/UserDashboard/Index';
 import UserDada from '../../components/UserData';
 const { Content, Sider } = Layout;
