@@ -3,7 +3,25 @@ import { Title } from '../components/Common/Title';
 import { TextBlock } from '../components/Common/TextBlock';
 import { Dashboard } from '../components/Dashboard/Index';
 
-export default function Home() {
+export const getServerSideProps = async () => {
+	const responseMedias = await fetch(`http://localhost:5000/medias`);
+	//const medias = await responseMedias.json();
+	console.log(`Aqui está a responseMedia`);
+	console.log(responseMedias);
+	const medias = await responseMedias.json();
+	console.log(`Aqui estão as medias do site`);
+	console.log(medias);
+
+	return {
+		props: {
+			medias, // props for the Home component
+		},
+	};
+};
+
+export default function Home({ medias }) {
+	console.log(medias);
+
 	return (
 		<>
 			<Head>
@@ -17,7 +35,7 @@ export default function Home() {
 					Se tiver algum documento que possa contribuir, faça o login
 					e carrege seu arquivo!
 				</TextBlock>
-				<Dashboard />
+				<Dashboard medias={medias} />
 			</div>
 		</>
 	);
