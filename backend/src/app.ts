@@ -8,7 +8,7 @@ import logger from './adapters/logger';
 import { find } from '@src/services/categoryService';
 import categoryService from '@src/services/categoryService';
 import productService from '@src/services/productService';
-import fileService from '@src/services/fileService';
+import mediaService from '@src/services/mediaService';
 
 import NodeMailer from 'nodemailer';
 import { google } from 'googleapis';
@@ -57,10 +57,10 @@ app.get('/sendemail', async (req: Request, res: Response) => {
 	});
 });
 
-app.get('/files', async (req: Request, res: Response) => {
-	const files = await fileService.findFiles();
-	logger.info(`aqui estão as categorias: ${files}`);
-	res.json(files);
+app.get('/medias', async (req: Request, res: Response) => {
+	const medias = await mediaService.findMedias();
+	logger.info(`aqui estão as Medias: ${medias}`);
+	res.json(medias);
 });
 
 app.get('/categories', async (req: Request, res: Response) => {
