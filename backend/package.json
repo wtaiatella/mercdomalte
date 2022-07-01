@@ -10,7 +10,7 @@
 		"start": "ts-node -r tsconfig-paths/register server.ts",
 		"ci:test": "jest --runInBand",
 		"ci:migrate": "prisma migrate dev",
-		"build": "ts-node -r tsconfig-paths/register server.ts",
+		"build": "ts-node -r tsconfig-paths/register server.ts"
 	},
 	"keywords": [],
 	"author": "",
