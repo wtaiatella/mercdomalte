@@ -59,7 +59,8 @@ app.get('/sendemail', async (req: Request, res: Response) => {
 
 app.get('/medias', async (req: Request, res: Response) => {
 	const medias = await mediaService.findMedias();
-	logger.info(`aqui estão as Medias: ${medias}`);
+	console.log(`aqui estão as Medias:`);
+	console.log(medias);
 	res.json(medias);
 });
 
