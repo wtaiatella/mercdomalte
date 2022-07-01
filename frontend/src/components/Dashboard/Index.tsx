@@ -34,7 +34,7 @@ export function Dashboard({ medias }) {
 				icon: <SearchOutlined />,
 				title: media.title,
 				size: 32,
-				categories: ['Insumos'],
+				categories: [media.category.name],
 			};
 		});
 		setData(mediaList);
