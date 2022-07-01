@@ -3,7 +3,7 @@ import type { InputRef } from 'antd';
 import { Button, Input, Space, Table, Tag, Popconfirm, Modal } from 'antd';
 import type { ColumnsType, ColumnType } from 'antd/lib/table';
 import type { FilterConfirmProps } from 'antd/lib/table/interface';
-import React, { useRef, useState, ReactNode } from 'react';
+import React, { useRef, useState, ReactNode, useEffect } from 'react';
 import Highlighter from 'react-highlight-words';
 import { Container } from './styles';
 
@@ -17,41 +17,28 @@ interface DataType {
 
 type DataIndex = keyof DataType;
 
-export function Dashboard() {
+export function Dashboard({ medias }) {
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef<InputRef>(null);
 
-	const [data, setData] = useState<DataType[]>([
-		{
-			key: '1',
-			icon: <SearchOutlined />,
-			title: 'John Brown',
-			size: 32,
-			categories: ['Insumos', 'Maltes'],
-		},
-		{
-			key: '2',
-			icon: <SearchOutlined />,
-			title: 'Joe Black',
-			size: 42,
-			categories: ['Insumos'],
-		},
-		{
-			key: '3',
-			icon: <SearchOutlined />,
-			title: 'Jim Green',
-			size: 32,
-			categories: ['Insumos'],
-		},
-		{
-			key: '4',
-			icon: <SearchOutlined />,
-			title: 'Jim Red',
-			size: 32,
-			categories: ['Insumos'],
-		},
-	]);
+	console.log('dentro do dashboard');
+	console.log(medias);
+
+	const [data, setData] = useState<DataType[]>([]);
+
+	useEffect(() => {
+		const mediaList = medias.map((media) => {
+			return {
+				key: media.id,
+				icon: <SearchOutlined />,
+				title: media.title,
+				size: 32,
+				categories: [media.category.name],
+			};
+		});
+		setData(mediaList);
+	}, [medias]);
 
 	const handleSearch = (
 		selectedKeys: string[],
