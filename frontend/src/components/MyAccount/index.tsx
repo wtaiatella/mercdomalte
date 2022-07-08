@@ -2,12 +2,17 @@ import React, { createElement, useState } from 'react';
 
 import { MenuProps, Space } from 'antd';
 import { Layout, Menu } from 'antd';
-import { ProfileOutlined, UserOutlined } from '@ant-design/icons';
+import {
+	ProfileOutlined,
+	UserOutlined,
+	FileAddOutlined,
+} from '@ant-design/icons';
 
 import { UserDashboard } from '../../components/UserDashboard/Index';
 import UserDada from '../../components/UserData';
 
 import { Container } from './styles';
+import NewFile from '../NewFile';
 
 const { Content, Sider } = Layout;
 
@@ -29,6 +34,11 @@ export default function MyAccount() {
 			key: '2',
 			icon: createElement(ProfileOutlined),
 			label: 'Meus Arquivos',
+		},
+		{
+			key: '3',
+			icon: createElement(FileAddOutlined),
+			label: 'Novo Arquivo',
 		},
 	];
 
@@ -52,6 +62,7 @@ export default function MyAccount() {
 					<Content>
 						{menuKey === '1' && <UserDada />}
 						{menuKey === '2' && <UserDashboard />}
+						{menuKey === '3' && <NewFile />}
 					</Content>
 				</Layout>
 			</Container>
