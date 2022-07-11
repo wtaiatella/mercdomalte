@@ -2,9 +2,10 @@ import Head from 'next/head';
 import { Title } from '../components/Common/Title';
 import { TextBlock } from '../components/Common/TextBlock';
 import { Dashboard } from '../components/Dashboard/Index';
+import { API } from './../services/constants';
 
 export const getServerSideProps = async () => {
-	const responseMedias = await fetch(`http://localhost:5000/medias`);
+	const responseMedias = await fetch(`${API}:5000/medias`);
 	//const medias = await responseMedias.json();
 	console.log(`Aqui está a responseMedia`);
 	console.log(responseMedias);
