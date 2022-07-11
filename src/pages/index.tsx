@@ -5,7 +5,7 @@ import { Dashboard } from '../components/Dashboard/Index';
 import { API } from './../services/constants';
 
 export const getServerSideProps = async () => {
-	const responseMedias = await fetch(`${API}:5000/medias`);
+	const responseMedias = await fetch(`${API}/medias`);
 	//const medias = await responseMedias.json();
 	console.log(`Aqui está a responseMedia`);
 	console.log(responseMedias);
