@@ -5,9 +5,14 @@ import { message, Upload } from 'antd';
 
 import { Container } from './styles';
 
-import { InboxOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+	ConsoleSqlOutlined,
+	InboxOutlined,
+	SearchOutlined,
+} from '@ant-design/icons';
 import { ReactNode, useEffect, useState } from 'react';
 import NewFileForm from '../NewFileForm';
+import { s3 } from '../../services/aws';
 
 /*
 Entender porque esta dando erro de acesso ao path
@@ -69,6 +74,7 @@ export default function NewFile({}) {
 		multiple: false,
 		maxCount: 1,
 		//action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+
 		onChange(info) {
 			const { status } = info.file;
 			console.log(info.file.status);
@@ -108,13 +114,47 @@ export default function NewFile({}) {
 		},
 	};
 
+	function s3upload(event) {
+		event.preventDefault();
+		console.log(event);
+		var files = document.getElementById('fileUpload').files;
+		console.log(files);
+
+		if (files) {
+			var file = files[0];
+
+			const uploadParams = {
+				Bucket: 'mercdomalte-files',
+				Key: file.name,
+				Body: file,
+			};
+
+			console.log(s3.config.credentials);
+
+			s3.upload(uploadParams, function (err, data) {
+				if (err) {
+					console.log(uploadParams);
+					console.log(
+						'There was an error uploading your photo: ' +
+							err.message
+					);
+				}
+				if (data) {
+					console.log('Upload Success', data.Location);
+					console.log(data);
+					return data;
+				}
+			});
+		}
+	}
+
 	return (
 		<>
 			<Head>
 				<title>MdM - Novo Arquivo</title>
 			</Head>
 			<Container>
-				<h1>Novo arquivo</h1>
+				<h1>Novo arquivo1</h1>
 
 				<Dragger {...props}>
 					<p className='ant-upload-drag-icon'>
@@ -129,6 +169,15 @@ export default function NewFile({}) {
 					</p>
 				</Dragger>
 				{fileData ? <NewFileForm fileData={fileData} /> : <></>}
+
+				<form action='' id='meu-form'>
+					<div>
+						<input type='file' id='fileUpload' />
+					</div>
+					<div>
+						<button onClick={s3upload}>Submit</button>
+					</div>
+				</form>
 			</Container>
 		</>
 	);
