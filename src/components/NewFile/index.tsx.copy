@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import { ReactNode, useEffect, useState } from 'react';
 
-import { UploadProps, Form } from 'antd';
-import { message, Upload, Button } from 'antd';
+import { UploadProps } from 'antd';
+import { message, Upload } from 'antd';
 import {
 	ConsoleSqlOutlined,
 	InboxOutlined,
@@ -14,7 +14,6 @@ import { Container } from './styles';
 
 import NewFileForm from '../NewFileForm';
 import { s3upload } from '../../services/aws';
-import { RcFile } from 'antd/lib/upload';
 
 /*
 Entender porque esta dando erro de acesso ao path
@@ -46,7 +45,28 @@ export default function NewFile({}) {
 	}
 
 	const [fileData, setFileData] = useState<fileDataProp>();
-	const [fileUploaded, setFileUploaded] = useState<RcFile>();
+
+	useEffect(() => {
+		/*
+		também não funcionaou por ai
+		const fetchCategories = async () => {
+			const data = await fetch('http://localhost:5000/medias');
+			const json = await data.json();
+			setCategories(json);
+			console.log(json);
+		};
+
+		fetchCategories();
+		*/
+	}, []);
+
+	const onFinish = (values: any) => {
+		console.log('Received values of form: ', values);
+	};
+
+	const onFinishFailed = (errorInfo: any) => {
+		console.log('Failed:', errorInfo);
+	};
 
 	const { Dragger } = Upload;
 
@@ -54,12 +74,11 @@ export default function NewFile({}) {
 		name: 'file',
 		multiple: false,
 		maxCount: 1,
-		//action: 'https://localhost:3000/',
+		//action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
 
 		onChange(info) {
 			const { status } = info.file;
 			console.log(info.file.status);
-			console.log(info);
 			if (status !== 'uploading') {
 				console.log(info.file, info.fileList);
 			}
@@ -75,18 +94,18 @@ export default function NewFile({}) {
 					icon: <SearchOutlined />,
 				});
 
-				console.log('deu certo drag and drop ' + info.file.name);
-				console.log(info);
-				console.log(info.file.originFileObj);
-
-				const arquivo: RcFile = info.file.originFileObj;
-
-				setFileUploaded(arquivo);
+				console.log('deu certo ' + info.file.name);
 			} else if (status === 'removed') {
 				setFileData(undefined);
-				setFileUploaded(undefined);
 			} else if (status === 'error') {
 				message.error(`${info.file.name} file upload failed.`);
+				setFileData({
+					name: info.file.name,
+					slug: info.file.name,
+					size: info.file.size,
+					type: info.file.type,
+					icon: <SearchOutlined />,
+				});
 
 				console.log('deu erro');
 			}
@@ -98,17 +117,12 @@ export default function NewFile({}) {
 
 	function handleUploadClick(event) {
 		event.preventDefault();
-		console.log('Entrada do Upload pelo botão');
 		console.log(event);
-		console.log(event.target.form[0].files[0]);
 		var files = document.getElementById('fileUpload').files;
-		console.log('Upload pelo botão');
-		console.log(files, typeof files);
-		console.log(files[0], typeof files[0]);
+		console.log(files);
 
-		const arquivo: File = event.target.form[0].files[0];
-		if (arquivo) {
-			s3upload(arquivo);
+		if (files) {
+			s3upload(files);
 		} else {
 			alert('Escolha um arquivo!');
 		}
@@ -134,7 +148,6 @@ export default function NewFile({}) {
 						from uploading company data or other band files
 					</p>
 				</Dragger>
-
 				{fileData ? <NewFileForm fileData={fileData} /> : <></>}
 
 				<form action='' id='meu-form'>

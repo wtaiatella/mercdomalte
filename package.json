@@ -13,6 +13,10 @@
 	},
 	"dependencies": {
 		"@ant-design/icons": "^4.7.0",
+		"@aws-sdk/client-cognito-identity": "^3.128.0",
+		"@aws-sdk/client-s3": "^3.128.0",
+		"@aws-sdk/credential-provider-cognito-identity": "^3.128.0",
+		"@aws-sdk/types": "^3.127.0",
 		"antd": "4.21.0",
 		"aws-cli": "^0.0.2",
 		"aws-sdk": "^2.1172.0",

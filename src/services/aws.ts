@@ -1,24 +1,48 @@
-import {
-	bucketName,
-	bucketRegion,
-	IdentityPoolId,
-} from './../services/constants';
+const { CognitoIdentityClient } = require('@aws-sdk/client-cognito-identity');
+const {
+	fromCognitoIdentityPool,
+} = require('@aws-sdk/credential-provider-cognito-identity');
+const {
+	S3Client,
+	PutObjectCommand,
+	ListObjectsCommand,
+	DeleteObjectCommand,
+	DeleteObjectsCommand,
+} = require('@aws-sdk/client-s3');
 
-var AWS = require('aws-sdk');
+export const s3upload = async (file) => {
+	const REGION = 'us-east-1';
+	const IDENTITY_POOL_ID = 'us-east-1:296f99e0-15e9-43b8-b779-0691cb87c545';
+	const BUCKET_NAME = 'mercdomalte-files';
 
-AWS.config.update({
-	region: 'us-east-1',
-	credentials: new AWS.CognitoIdentityCredentials({
-		IdentityPoolId: 'us-east-1:296f99e0-15e9-43b8-b779-0691cb87c545',
-	}),
-});
+	const s3 = new S3Client({
+		region: REGION,
+		credentials: fromCognitoIdentityPool({
+			client: new CognitoIdentityClient({ region: REGION }),
+			identityPoolId: IDENTITY_POOL_ID,
+		}),
+	});
 
-export const s3 = new AWS.S3({
-	apiVersion: 'latest',
-	params: { Bucket: 'mercdomalte-files' },
-});
+	console.log('credenciais iniciais');
+	console.log(`IDENTITY_POOL_ID = ${IDENTITY_POOL_ID}`);
+	console.log(s3.credentials);
+	console.log(s3);
 
-console.log('credenciais iniciais');
-console.log(IdentityPoolId);
-console.log(AWS.config.credentials);
-console.log(s3);
+	console.log('Função s3upload');
+	//const file = files[0];
+	console.log(file);
+
+	const fileName = file.name;
+	const Key = fileName;
+	const uploadParams = {
+		Bucket: BUCKET_NAME,
+		Key: Key,
+		Body: file,
+	};
+	try {
+		const data = await s3.send(new PutObjectCommand(uploadParams));
+		alert('Successfully uploaded photo.');
+	} catch (err) {
+		return alert('There was an error uploading your photo: ' + err.message);
+	}
+};
