@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useCallback } from 'react';
 
 import { UploadProps, Form } from 'antd';
 import { message, Upload, Button } from 'antd';
@@ -16,27 +16,38 @@ import NewFileForm from '../NewFileForm';
 import { s3upload } from '../../services/aws';
 import { RcFile } from 'antd/lib/upload';
 
-/*
-Entender porque esta dando erro de acesso ao path
-export const getServerSideProps = async () => {
-	const responseCategories = await fetch(
-		`http://localhost:5000/mediasCategories`
-	);
+const NewFile = () => {
+	const [categories, setCategories] = useState([]);
+	const [s3getSignedUrl, setS3getSignedUrl] = useState('');
 
-	console.log(responseCategories);
-	const categories = await responseCategories.json();
-	console.log(`Aqui estão as medias do site`);
-	console.log(categories);
+	useEffect(() => {
+		console.log('useeffect');
+		/*const fetchCategories = async () => {
+			const dataCategories = await fetch(
+				`http://localhost:5000/mediasCategories`
+			);
+			const jsonCategories = await dataCategories.json();
+			setCategories(jsonCategories);
 
-	return {
-		props: {
-			categories, // props for the Home component
-		},
-	};
-};
-*/
+			console.log(`Aqui estão as medias do site`);
+			console.log(jsonCategories);
+		};*/
 
-export default function NewFile({}) {
+		const fetchS3getSignedUrl = async () => {
+			const dataS3getSignedUrl = await fetch(
+				'http://localhost:5000/uploadurl'
+			);
+			console.log(dataS3getSignedUrl);
+			const textS3getSignedUrl = await dataS3getSignedUrl.text();
+
+			setS3getSignedUrl(textS3getSignedUrl);
+
+			console.log(`Aqui está a S3getSignedUrl`);
+			console.log(textS3getSignedUrl);
+		};
+
+		fetchS3getSignedUrl().catch(console.error);
+	}, []);
 	interface fileDataProp {
 		name: string;
 		slug?: string;
@@ -54,7 +65,7 @@ export default function NewFile({}) {
 		name: 'file',
 		multiple: false,
 		maxCount: 1,
-		//action: 'https://localhost:3000/',
+		//action: s3getSignedUrl,
 
 		onChange(info) {
 			const { status } = info.file;
@@ -82,6 +93,20 @@ export default function NewFile({}) {
 				const arquivo: RcFile = info.file.originFileObj;
 
 				setFileUploaded(arquivo);
+
+				const fetchS3file = async () => {
+					const uploadParams = {
+						Bucket: 'mercdomalte-files',
+						//Key: fileUploaded.name,
+						Body: fileUploaded,
+					};
+					const response = await fetch(s3getSignedUrl, {
+						method: 'PUT',
+						body: uploadParams.Body,
+					});
+				};
+
+				fetchS3file().catch(console.error);
 			} else if (status === 'removed') {
 				setFileData(undefined);
 				setFileUploaded(undefined);
@@ -148,4 +173,6 @@ export default function NewFile({}) {
 			</Container>
 		</>
 	);
-}
+};
+
+export default NewFile;
