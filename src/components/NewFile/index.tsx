@@ -13,51 +13,21 @@ import 'antd/dist/antd.css';
 import { Container } from './styles';
 
 import NewFileForm from '../NewFileForm';
-import { s3upload } from '../../services/aws';
+import { s3getSignedUrl } from '../../services/aws';
 import { RcFile } from 'antd/lib/upload';
 
 const NewFile = () => {
-	const [categories, setCategories] = useState([]);
-	const [s3getSignedUrl, setS3getSignedUrl] = useState('');
-
-	useEffect(() => {
-		console.log('useeffect');
-		/*const fetchCategories = async () => {
-			const dataCategories = await fetch(
-				`http://localhost:5000/mediasCategories`
-			);
-			const jsonCategories = await dataCategories.json();
-			setCategories(jsonCategories);
-
-			console.log(`Aqui estão as medias do site`);
-			console.log(jsonCategories);
-		};*/
-
-		const fetchS3getSignedUrl = async () => {
-			const dataS3getSignedUrl = await fetch(
-				'http://localhost:5000/uploadurl'
-			);
-			console.log(dataS3getSignedUrl);
-			const textS3getSignedUrl = await dataS3getSignedUrl.text();
-
-			setS3getSignedUrl(textS3getSignedUrl);
-
-			console.log(`Aqui está a S3getSignedUrl`);
-			console.log(textS3getSignedUrl);
-		};
-
-		fetchS3getSignedUrl().catch(console.error);
-	}, []);
 	interface fileDataProp {
 		name: string;
 		slug?: string;
 		size: number;
 		type: string;
-		icon: ReactNode;
+		icon: string;
 	}
 
 	const [fileData, setFileData] = useState<fileDataProp>();
 	const [fileUploaded, setFileUploaded] = useState<RcFile>();
+	const [s3UploadSignedUrl, setS3UploadSignedUrl] = useState<string>();
 
 	const { Dragger } = Upload;
 
@@ -65,9 +35,8 @@ const NewFile = () => {
 		name: 'file',
 		multiple: false,
 		maxCount: 1,
-		//action: s3getSignedUrl,
 
-		onChange(info) {
+		async onChange(info) {
 			const { status } = info.file;
 			console.log(info.file.status);
 			console.log(info);
@@ -78,41 +47,36 @@ const NewFile = () => {
 				message.success(
 					`${info.file.name} file uploaded successfully.`
 				);
-				setFileData({
-					name: info.file.name,
-					slug: info.file.name,
-					size: info.file.size,
-					type: info.file.type,
-					icon: <SearchOutlined />,
-				});
 
-				console.log('deu certo drag and drop ' + info.file.name);
-				console.log(info);
+				console.log(
+					'deu certo drag and drop do arquivo ' + info.file.name
+				);
 				console.log(info.file.originFileObj);
 
-				const arquivo: RcFile = info.file.originFileObj;
+				const fileDroped: RcFile = info.file.originFileObj;
 
-				setFileUploaded(arquivo);
+				setFileUploaded(fileDroped);
+				//TODO: Generate SLUG
+				//TODO: Check if exists this file slug in DataBase
 
-				const fetchS3file = async () => {
-					const uploadParams = {
-						Bucket: 'mercdomalte-files',
-						//Key: fileUploaded.name,
-						Body: fileUploaded,
-					};
-					const response = await fetch(s3getSignedUrl, {
-						method: 'PUT',
-						body: uploadParams.Body,
-					});
+				const fetchS3SignedUrl = await s3getSignedUrl(fileDroped.name);
+				console.log('retorno do fecht = ' + fetchS3SignedUrl);
+
+				setS3UploadSignedUrl(`${fetchS3SignedUrl}`);
+
+				const fileDataDroped = {
+					name: fileDroped.name,
+					slug: fileDroped.name,
+					size: fileDroped.size,
+					type: fileDroped.type,
+					icon: 'SearchOutlined',
 				};
-
-				fetchS3file().catch(console.error);
+				setFileData(fileDataDroped);
 			} else if (status === 'removed') {
 				setFileData(undefined);
 				setFileUploaded(undefined);
 			} else if (status === 'error') {
-				message.error(`${info.file.name} file upload failed.`);
-
+				message.error(`Falha no upload do arquivo ${info.file.name}.`);
 				console.log('deu erro');
 			}
 		},
@@ -120,24 +84,6 @@ const NewFile = () => {
 			console.log('Dropped files', e.dataTransfer.files);
 		},
 	};
-
-	function handleUploadClick(event) {
-		event.preventDefault();
-		console.log('Entrada do Upload pelo botão');
-		console.log(event);
-		console.log(event.target.form[0].files[0]);
-		var files = document.getElementById('fileUpload').files;
-		console.log('Upload pelo botão');
-		console.log(files, typeof files);
-		console.log(files[0], typeof files[0]);
-
-		const arquivo: File = event.target.form[0].files[0];
-		if (arquivo) {
-			s3upload(arquivo);
-		} else {
-			alert('Escolha um arquivo!');
-		}
-	}
 
 	return (
 		<>
@@ -160,16 +106,15 @@ const NewFile = () => {
 					</p>
 				</Dragger>
 
-				{fileData ? <NewFileForm fileData={fileData} /> : <></>}
-
-				<form action='' id='meu-form'>
-					<div>
-						<input type='file' id='fileUpload' />
-					</div>
-					<div>
-						<button onClick={handleUploadClick}>Submit</button>
-					</div>
-				</form>
+				{fileData ? (
+					<NewFileForm
+						fileData={fileData}
+						fileUploaded={fileUploaded}
+						s3UploadSignedUrl={s3UploadSignedUrl}
+					/>
+				) : (
+					<></>
+				)}
 			</Container>
 		</>
 	);
