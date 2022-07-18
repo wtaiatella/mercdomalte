@@ -1,71 +1,33 @@
 import Head from 'next/head';
+import { ReactNode, useEffect, useState, useCallback } from 'react';
 
-import type { UploadProps } from 'antd';
-import { message, Upload } from 'antd';
-
-import { Container } from './styles';
-
+import { UploadProps, Form } from 'antd';
+import { message, Upload, Button } from 'antd';
 import {
 	ConsoleSqlOutlined,
 	InboxOutlined,
 	SearchOutlined,
 } from '@ant-design/icons';
-import { ReactNode, useEffect, useState } from 'react';
+import 'antd/dist/antd.css';
+
+import { Container } from './styles';
+
 import NewFileForm from '../NewFileForm';
-import { s3 } from '../../services/aws';
+import { s3getSignedUrl } from '../../services/aws';
+import { RcFile } from 'antd/lib/upload';
 
-/*
-Entender porque esta dando erro de acesso ao path
-export const getServerSideProps = async () => {
-	const responseCategories = await fetch(
-		`http://localhost:5000/mediasCategories`
-	);
-
-	console.log(responseCategories);
-	const categories = await responseCategories.json();
-	console.log(`Aqui estão as medias do site`);
-	console.log(categories);
-
-	return {
-		props: {
-			categories, // props for the Home component
-		},
-	};
-};
-*/
-
-export default function NewFile({}) {
+const NewFile = () => {
 	interface fileDataProp {
 		name: string;
 		slug?: string;
 		size: number;
 		type: string;
-		icon: ReactNode;
+		icon: string;
 	}
 
 	const [fileData, setFileData] = useState<fileDataProp>();
-
-	useEffect(() => {
-		/*
-		também não funcionaou por ai
-		const fetchCategories = async () => {
-			const data = await fetch('http://localhost:5000/medias');
-			const json = await data.json();
-			setCategories(json);
-			console.log(json);
-		};
-
-		fetchCategories();
-		*/
-	}, []);
-
-	const onFinish = (values: any) => {
-		console.log('Received values of form: ', values);
-	};
-
-	const onFinishFailed = (errorInfo: any) => {
-		console.log('Failed:', errorInfo);
-	};
+	const [fileUploaded, setFileUploaded] = useState<RcFile>();
+	const [s3UploadSignedUrl, setS3UploadSignedUrl] = useState<string>();
 
 	const { Dragger } = Upload;
 
@@ -73,11 +35,11 @@ export default function NewFile({}) {
 		name: 'file',
 		multiple: false,
 		maxCount: 1,
-		//action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
 
-		onChange(info) {
+		async onChange(info) {
 			const { status } = info.file;
 			console.log(info.file.status);
+			console.log(info);
 			if (status !== 'uploading') {
 				console.log(info.file, info.fileList);
 			}
@@ -85,27 +47,36 @@ export default function NewFile({}) {
 				message.success(
 					`${info.file.name} file uploaded successfully.`
 				);
-				setFileData({
-					name: info.file.name,
-					slug: info.file.name,
-					size: info.file.size,
-					type: info.file.type,
-					icon: <SearchOutlined />,
-				});
 
-				console.log('deu certo ' + info.file.name);
+				console.log(
+					'deu certo drag and drop do arquivo ' + info.file.name
+				);
+				console.log(info.file.originFileObj);
+
+				const fileDroped: RcFile = info.file.originFileObj;
+
+				setFileUploaded(fileDroped);
+				//TODO: Generate SLUG
+				//TODO: Check if exists this file slug in DataBase
+
+				const fetchS3SignedUrl = await s3getSignedUrl(fileDroped.name);
+				console.log('retorno do fecht = ' + fetchS3SignedUrl);
+
+				setS3UploadSignedUrl(`${fetchS3SignedUrl}`);
+
+				const fileDataDroped = {
+					name: fileDroped.name,
+					slug: fileDroped.name,
+					size: fileDroped.size,
+					type: fileDroped.type,
+					icon: 'SearchOutlined',
+				};
+				setFileData(fileDataDroped);
 			} else if (status === 'removed') {
 				setFileData(undefined);
+				setFileUploaded(undefined);
 			} else if (status === 'error') {
-				message.error(`${info.file.name} file upload failed.`);
-				setFileData({
-					name: info.file.name,
-					slug: info.file.name,
-					size: info.file.size,
-					type: info.file.type,
-					icon: <SearchOutlined />,
-				});
-
+				message.error(`Falha no upload do arquivo ${info.file.name}.`);
 				console.log('deu erro');
 			}
 		},
@@ -113,40 +84,6 @@ export default function NewFile({}) {
 			console.log('Dropped files', e.dataTransfer.files);
 		},
 	};
-
-	function s3upload(event) {
-		event.preventDefault();
-		console.log(event);
-		var files = document.getElementById('fileUpload').files;
-		console.log(files);
-
-		if (files) {
-			var file = files[0];
-
-			const uploadParams = {
-				Bucket: 'mercdomalte-files',
-				Key: file.name,
-				Body: file,
-			};
-
-			console.log(s3.config.credentials);
-
-			s3.upload(uploadParams, function (err, data) {
-				if (err) {
-					console.log(uploadParams);
-					console.log(
-						'There was an error uploading your photo: ' +
-							err.message
-					);
-				}
-				if (data) {
-					console.log('Upload Success', data.Location);
-					console.log(data);
-					return data;
-				}
-			});
-		}
-	}
 
 	return (
 		<>
@@ -168,17 +105,19 @@ export default function NewFile({}) {
 						from uploading company data or other band files
 					</p>
 				</Dragger>
-				{fileData ? <NewFileForm fileData={fileData} /> : <></>}
 
-				<form action='' id='meu-form'>
-					<div>
-						<input type='file' id='fileUpload' />
-					</div>
-					<div>
-						<button onClick={s3upload}>Submit</button>
-					</div>
-				</form>
+				{fileData ? (
+					<NewFileForm
+						fileData={fileData}
+						fileUploaded={fileUploaded}
+						s3UploadSignedUrl={s3UploadSignedUrl}
+					/>
+				) : (
+					<></>
+				)}
 			</Container>
 		</>
 	);
-}
+};
+
+export default NewFile;

@@ -1,24 +1,17 @@
-import {
-	bucketName,
-	bucketRegion,
-	IdentityPoolId,
-} from './../services/constants';
+const s3getSignedUrl = async (fileName: string) => {
+	console.log(`Function s3getSignedUrl with file.name = ${fileName}`);
 
-var AWS = require('aws-sdk');
+	const resposta = await fetch(`http://localhost:5500/uploadurl`, {
+		method: 'POST',
+		body: `{"fileName": "${fileName}"}`,
+		headers: { 'Content-type': 'application/json; charset=UTF-8' },
+	})
+		.then((response) => response.text())
+		.catch((err) => console.log(err));
+	console.log(resposta);
 
-AWS.config.update({
-	region: 'us-east-1',
-	credentials: new AWS.CognitoIdentityCredentials({
-		IdentityPoolId: 'us-east-1:296f99e0-15e9-43b8-b779-0691cb87c545',
-	}),
-});
+	if (resposta) return resposta;
+	//const categoryObject = await respS3SignedUrl.text();
+};
 
-export const s3 = new AWS.S3({
-	apiVersion: 'latest',
-	params: { Bucket: 'mercdomalte-files' },
-});
-
-console.log('credenciais iniciais');
-console.log(IdentityPoolId);
-console.log(AWS.config.credentials);
-console.log(s3);
+export { s3getSignedUrl };
