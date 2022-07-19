@@ -76,8 +76,28 @@ const NewFile = () => {
 				setFileData(undefined);
 				setFileUploaded(undefined);
 			} else if (status === 'error') {
-				message.error(`Falha no upload do arquivo ${info.file.name}.`);
-				console.log('deu erro');
+				//message.error(`Falha no upload do arquivo ${info.file.name}.`);
+				//console.log('deu erro');
+
+				const fileDroped: RcFile = info.file.originFileObj;
+
+				setFileUploaded(fileDroped);
+				//TODO: Generate SLUG
+				//TODO: Check if exists this file slug in DataBase
+
+				const fetchS3SignedUrl = await s3getSignedUrl(fileDroped.name);
+				console.log('retorno do fecht = ' + fetchS3SignedUrl);
+
+				setS3UploadSignedUrl(`${fetchS3SignedUrl}`);
+
+				const fileDataDroped = {
+					name: fileDroped.name,
+					slug: fileDroped.name,
+					size: fileDroped.size,
+					type: fileDroped.type,
+					icon: 'SearchOutlined',
+				};
+				setFileData(fileDataDroped);
 			}
 		},
 		onDrop(e) {
