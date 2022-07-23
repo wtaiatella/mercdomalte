@@ -25,12 +25,12 @@ export default function NewFileForm({
 }) {
 	const [categories, setCategories] = useState([]);
 
+	const API = process.env.BACKEND_API;
+
 	useEffect(() => {
 		console.log('useeffect');
 		const fetchCategories = async () => {
-			const dataCategories = await fetch(
-				`http://localhost:5500/mediascategories`
-			);
+			const dataCategories = await fetch(`${API}/mediascategories`);
 			const jsonCategories = await dataCategories.json();
 			setCategories(jsonCategories);
 
@@ -54,7 +54,7 @@ export default function NewFileForm({
 		const jsonAddFile = JSON.stringify(addFile);
 		console.log(jsonAddFile);
 
-		fetch('http://localhost:5500/medias', {
+		fetch(`${API}/medias`, {
 			method: 'POST',
 			body: JSON.stringify(addFile),
 			headers: { 'Content-type': 'application/json; charset=UTF-8' },

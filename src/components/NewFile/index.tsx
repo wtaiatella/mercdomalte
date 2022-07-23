@@ -79,12 +79,9 @@ const NewFile = () => {
 				console.log(info.file, info.fileList);
 			}
 			if (status === 'done') {
-				//message.success(`${info.file.name} file uploaded successfully.`);
-
 				console.log(
 					'deu certo drag and drop do arquivo ' + info.file.name
 				);
-				//console.log(info.file.originFileObj);
 
 				const fileDroped: RcFile = info.file.originFileObj;
 				handleFileDroped(fileDroped);
