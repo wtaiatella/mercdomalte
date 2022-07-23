@@ -1,4 +1,4 @@
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 
 import { Container } from './styles';
 
@@ -70,6 +70,12 @@ export default function NewFileForm({
 			method: 'PUT',
 			body: fileUploaded,
 		});
+
+		console.log(response);
+
+		if (response.status === 200) {
+			message.success('Upload realizado com succeso, Obrigado!', 10);
+		}
 	};
 
 	const onFinishFailed = (errorInfo: any) => {

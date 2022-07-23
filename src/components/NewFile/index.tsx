@@ -13,8 +13,10 @@ import 'antd/dist/antd.css';
 import { Container } from './styles';
 
 import NewFileForm from '../NewFileForm';
-import { s3getSignedUrl } from '../../services/aws';
+import { s3getUploadSignedUrl } from '../../services/awsService';
 import { RcFile } from 'antd/lib/upload';
+import tools from './../../util/tools';
+import fileService from './../../services/fileService';
 
 const NewFile = () => {
 	interface fileDataProp {
@@ -31,6 +33,39 @@ const NewFile = () => {
 
 	const { Dragger } = Upload;
 
+	const handleFileDroped = async (fileDroped: RcFile) => {
+		//TODO: Generate SLUG
+		const fileDropedSlug = tools.fileSlug(fileDroped.name);
+		console.log(`fileDropedSlug = ${fileDropedSlug}`);
+		//
+		//TODO: Check if exists this file slug in DataBase
+		const dropedFileExists = await fileService.findSlug(fileDropedSlug);
+		console.log(`dropedFileExists = ${dropedFileExists}`);
+		//
+		if (!dropedFileExists) {
+			setFileUploaded(fileDroped);
+			const fetchS3SignedUrl = await s3getUploadSignedUrl(
+				fileDroped.name
+			);
+			console.log('retorno do fecht = ' + fetchS3SignedUrl);
+
+			setS3UploadSignedUrl(`${fetchS3SignedUrl}`);
+
+			const fileDataDroped = {
+				name: fileDroped.name,
+				slug: fileDropedSlug,
+				size: fileDroped.size,
+				type: fileDroped.type,
+				icon: 'SearchOutlined',
+			};
+			setFileData(fileDataDroped);
+		} else {
+			message.error(
+				`O arquivo ${fileDroped.name} ja existe em nossa base de dados.`
+			);
+		}
+	};
+
 	const props: UploadProps = {
 		name: 'file',
 		multiple: false,
@@ -44,34 +79,15 @@ const NewFile = () => {
 				console.log(info.file, info.fileList);
 			}
 			if (status === 'done') {
-				message.success(
-					`${info.file.name} file uploaded successfully.`
-				);
+				//message.success(`${info.file.name} file uploaded successfully.`);
 
 				console.log(
 					'deu certo drag and drop do arquivo ' + info.file.name
 				);
-				console.log(info.file.originFileObj);
+				//console.log(info.file.originFileObj);
 
 				const fileDroped: RcFile = info.file.originFileObj;
-
-				setFileUploaded(fileDroped);
-				//TODO: Generate SLUG
-				//TODO: Check if exists this file slug in DataBase
-
-				const fetchS3SignedUrl = await s3getSignedUrl(fileDroped.name);
-				console.log('retorno do fecht = ' + fetchS3SignedUrl);
-
-				setS3UploadSignedUrl(`${fetchS3SignedUrl}`);
-
-				const fileDataDroped = {
-					name: fileDroped.name,
-					slug: fileDroped.name,
-					size: fileDroped.size,
-					type: fileDroped.type,
-					icon: 'SearchOutlined',
-				};
-				setFileData(fileDataDroped);
+				handleFileDroped(fileDroped);
 			} else if (status === 'removed') {
 				setFileData(undefined);
 				setFileUploaded(undefined);
@@ -80,24 +96,7 @@ const NewFile = () => {
 				//console.log('deu erro');
 
 				const fileDroped: RcFile = info.file.originFileObj;
-
-				setFileUploaded(fileDroped);
-				//TODO: Generate SLUG
-				//TODO: Check if exists this file slug in DataBase
-
-				const fetchS3SignedUrl = await s3getSignedUrl(fileDroped.name);
-				console.log('retorno do fecht = ' + fetchS3SignedUrl);
-
-				setS3UploadSignedUrl(`${fetchS3SignedUrl}`);
-
-				const fileDataDroped = {
-					name: fileDroped.name,
-					slug: fileDroped.name,
-					size: fileDroped.size,
-					type: fileDroped.type,
-					icon: 'SearchOutlined',
-				};
-				setFileData(fileDataDroped);
+				handleFileDroped(fileDroped);
 			}
 		},
 		onDrop(e) {

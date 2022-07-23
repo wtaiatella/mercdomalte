@@ -1,16 +1,18 @@
 import { SearchOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
-import { Button, Input, Space, Table, Tag, Popconfirm, Modal } from 'antd';
+import { Button, Input, Space, Table, Tag, Popconfirm } from 'antd';
 import type { ColumnsType, ColumnType } from 'antd/lib/table';
 import type { FilterConfirmProps } from 'antd/lib/table/interface';
 import React, { useRef, useState, ReactNode, useEffect } from 'react';
 import Highlighter from 'react-highlight-words';
+import { s3getDownloadeSignedUrl } from '../../services/awsService';
 import { Container } from './styles';
 
 interface DataType {
 	key: string;
 	icon: ReactNode;
 	title: string;
+	name: string;
 	size: number;
 	categories: string[];
 }
@@ -33,7 +35,8 @@ export function Dashboard({ medias }) {
 				key: media.id,
 				icon: <SearchOutlined />,
 				title: media.title,
-				size: 32,
+				name: media.name,
+				size: media.size / 1000,
 				categories: [media.category.name],
 			};
 		});
@@ -55,12 +58,14 @@ export function Dashboard({ medias }) {
 		setSearchText('');
 	};
 
-	const handleDownload = (key: React.Key) => {
-		const downloadData = data.filter((item) => item.key === key);
-		console.log(downloadData[0].title);
-		<Popconfirm title='Download de arquivo' onConfirm={() => {}}>
-			<a>Sim</a>
-		</Popconfirm>;
+	const handleDownload = async (key: React.Key) => {
+		const downloadfile = data.filter((item) => item.key === key);
+		console.log(downloadfile[0].name);
+		const url = await s3getDownloadeSignedUrl(downloadfile[0].name);
+		open(url.slice(1, -1), '_blank');
+		//await fetch(url.slice(1, -1));
+		//await fetch(url);
+		console.log(url);
 	};
 
 	const getColumnSearchProps = (
@@ -167,15 +172,23 @@ export function Dashboard({ medias }) {
 			title: 'Titulo',
 			dataIndex: 'title',
 			key: 'title',
-			width: '48%',
+			width: '30%',
 			...getColumnSearchProps('title'),
 		},
 
 		{
-			title: 'Size',
+			title: 'Nome do Arquivo',
+			dataIndex: 'name',
+			key: 'name',
+			width: '30%',
+			...getColumnSearchProps('name'),
+		},
+
+		{
+			title: 'Tamanho',
 			dataIndex: 'size',
 			key: 'size',
-			width: '10%',
+			width: '15%',
 			sorter: (a, b) => a.categories.length - b.categories.length,
 			sortDirections: ['descend', 'ascend'],
 			render: (_, { size }) => <>{size} kb</>,
@@ -184,6 +197,7 @@ export function Dashboard({ medias }) {
 			title: 'Categoria',
 			dataIndex: 'categories',
 			key: 'categories',
+			width: '15%',
 			...getColumnSearchProps('categories'),
 
 			render: (_, { categories }) => (
@@ -199,18 +213,26 @@ export function Dashboard({ medias }) {
 			key: 'operation',
 			fixed: 'right',
 			width: 100,
-			render: (_, record: { key: React.Key }) =>
-				data.length >= 1 ? (
-					<Button
-						type='link'
-						size='small'
-						onClick={() => {
-							handleDownload(record.key);
-						}}
-					>
-						Download
-					</Button>
-				) : null,
+			render: (_, record: { key: React.Key; title: string }) => {
+				if (data.length >= 1) {
+					console.log('Inicio dos dados da linha');
+					console.log(data);
+					console.log(record);
+					console.log(record.key);
+					console.log(record.title);
+
+					return (
+						<Button
+							title='Download de arquivo'
+							onClick={() => handleDownload(record.key)}
+						>
+							Download
+						</Button>
+					);
+				} else {
+					return null;
+				}
+			},
 		},
 	];
 
