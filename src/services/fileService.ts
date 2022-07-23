@@ -1,4 +1,5 @@
-const API = process.env.BACKEND_API;
+import { API } from './constants';
+
 const findSlug = async (fileSlug: string) => {
 	const responseSlug = await fetch(`${API}/medias/slug/${fileSlug}`);
 
