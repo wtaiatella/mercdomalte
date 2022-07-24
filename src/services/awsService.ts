@@ -1,7 +1,13 @@
-const s3getUploadSignedUrl = async (fileName: string) => {
+import { useContext } from 'react';
+import { UserContext } from '../contexts/UserContext';
+
+const s3getUploadSignedUrl = async (
+	fileName: string,
+	urlBackendApi: string
+) => {
 	console.log(`Function s3getSignedUrl with file.name = ${fileName}`);
 
-	const resposta = await fetch(`http://localhost:5500/uploadurl`, {
+	const resposta = await fetch(`${urlBackendApi}/uploadurl`, {
 		method: 'POST',
 		body: `{"fileName": "${fileName}"}`,
 		headers: { 'Content-type': 'application/json; charset=UTF-8' },
@@ -14,10 +20,13 @@ const s3getUploadSignedUrl = async (fileName: string) => {
 	//const categoryObject = await respS3SignedUrl.text();
 };
 
-const s3getDownloadeSignedUrl = async (fileName: string) => {
+const s3getDownloadeSignedUrl = async (
+	fileName: string,
+	urlBackendApi: string
+) => {
 	console.log(`Function s3getSignedUrl with file.name = ${fileName}`);
 
-	const resposta = await fetch(`http://localhost:5500/downloadurl`, {
+	const resposta = await fetch(`${urlBackendApi}/downloadurl`, {
 		method: 'POST',
 		body: `{"fileName": "${fileName}"}`,
 		headers: { 'Content-type': 'application/json; charset=UTF-8' },

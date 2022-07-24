@@ -3,8 +3,15 @@ import type { InputRef } from 'antd';
 import { Button, Input, Space, Table, Tag, Popconfirm } from 'antd';
 import type { ColumnsType, ColumnType } from 'antd/lib/table';
 import type { FilterConfirmProps } from 'antd/lib/table/interface';
-import React, { useRef, useState, ReactNode, useEffect } from 'react';
+import React, {
+	useRef,
+	useState,
+	ReactNode,
+	useEffect,
+	useContext,
+} from 'react';
 import Highlighter from 'react-highlight-words';
+import { UserContext } from '../../contexts/UserContext';
 import { s3getDownloadeSignedUrl } from '../../services/awsService';
 import { Container } from './styles';
 
@@ -23,6 +30,7 @@ export function Dashboard({ medias }) {
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef<InputRef>(null);
+	const { urlBackendApi } = useContext(UserContext);
 
 	console.log('dentro do dashboard');
 	console.log(medias);
@@ -61,7 +69,10 @@ export function Dashboard({ medias }) {
 	const handleDownload = async (key: React.Key) => {
 		const downloadfile = data.filter((item) => item.key === key);
 		console.log(downloadfile[0].name);
-		const url = await s3getDownloadeSignedUrl(downloadfile[0].name);
+		const url = await s3getDownloadeSignedUrl(
+			downloadfile[0].name,
+			urlBackendApi
+		);
 		open(url.slice(1, -1), '_blank');
 		//await fetch(url.slice(1, -1));
 		//await fetch(url);

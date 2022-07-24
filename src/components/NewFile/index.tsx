@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { ReactNode, useEffect, useState, useCallback } from 'react';
+import { ReactNode, useEffect, useState, useCallback, useContext } from 'react';
 
 import { UploadProps, Form } from 'antd';
 import { message, Upload, Button } from 'antd';
@@ -17,6 +17,7 @@ import { s3getUploadSignedUrl } from '../../services/awsService';
 import { RcFile } from 'antd/lib/upload';
 import tools from './../../util/tools';
 import fileService from './../../services/fileService';
+import { UserContext } from '../../contexts/UserContext';
 
 const NewFile = () => {
 	interface fileDataProp {
@@ -30,22 +31,27 @@ const NewFile = () => {
 	const [fileData, setFileData] = useState<fileDataProp>();
 	const [fileUploaded, setFileUploaded] = useState<RcFile>();
 	const [s3UploadSignedUrl, setS3UploadSignedUrl] = useState<string>();
+	const { urlBackendApi } = useContext(UserContext);
 
 	const { Dragger } = Upload;
 
 	const handleFileDroped = async (fileDroped: RcFile) => {
 		//TODO: Generate SLUG
-		const fileDropedSlug = tools.fileSlug(fileDroped.name);
+		const fileDropedSlug = tools.getFileSlug(fileDroped.name);
 		console.log(`fileDropedSlug = ${fileDropedSlug}`);
 		//
 		//TODO: Check if exists this file slug in DataBase
-		const dropedFileExists = await fileService.findSlug(fileDropedSlug);
+		const dropedFileExists = await fileService.findSlug(
+			fileDropedSlug,
+			urlBackendApi
+		);
 		console.log(`dropedFileExists = ${dropedFileExists}`);
 		//
 		if (!dropedFileExists) {
 			setFileUploaded(fileDroped);
 			const fetchS3SignedUrl = await s3getUploadSignedUrl(
-				fileDroped.name
+				fileDroped.name,
+				urlBackendApi
 			);
 			console.log('retorno do fecht = ' + fetchS3SignedUrl);
 

@@ -3,6 +3,8 @@ import { Title } from '../components/Common/Title';
 import { TextBlock } from '../components/Common/TextBlock';
 import { Dashboard } from '../components/Dashboard/Index';
 import { API } from './../services/constants';
+import { useContext } from 'react';
+import { UserContext } from '../contexts/UserContext';
 
 export const getServerSideProps = async () => {
 	const responseMedias = await fetch(`${API}/medias`);
@@ -13,15 +15,22 @@ export const getServerSideProps = async () => {
 	console.log(`Aqui estão as medias do site`);
 	console.log(medias);
 
+	const BACKEND_API = process.env.NEXT_PUBLIC_BACKEND_API;
+
 	return {
 		props: {
 			medias, // props for the Home component
+			BACKEND_API,
 		},
 	};
 };
 
-export default function Home({ medias }) {
+export default function Home({ medias, BACKEND_API }) {
 	console.log(medias);
+	console.log(BACKEND_API);
+	const { setUrlBackendApi } = useContext(UserContext);
+
+	setUrlBackendApi(BACKEND_API);
 
 	return (
 		<>

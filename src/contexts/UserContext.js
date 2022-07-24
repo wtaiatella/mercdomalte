@@ -14,18 +14,15 @@ export const UserStorage = ({ children }) => {
 	*/
 
 	const [isModalVisible, setIsModalVisible] = useState(false);
-	//const [fileData1, setFileData1] = useState<fileDataProp> {};
-	//const [fileUploaded1, setFileUploaded1] = useState < RcFile > {};
+	const [urlBackendApi, setUrlBackendApi] = useState('');
 
 	return (
 		<UserContext.Provider
 			value={{
 				isModalVisible,
 				setIsModalVisible,
-				//fileData1,
-				//setFileData1,
-				//fileUploaded1,
-				//setFileUploaded1,
+				urlBackendApi,
+				setUrlBackendApi,
 			}}
 		>
 			{children}

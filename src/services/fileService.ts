@@ -1,7 +1,10 @@
-import { API } from './constants';
+import { useContext } from 'react';
+import { UserContext } from '../contexts/UserContext';
 
-const findSlug = async (fileSlug: string) => {
-	const responseSlug = await fetch(`${API}/medias/slug/${fileSlug}`);
+const findSlug = async (fileSlug: string, urlBackendApi: string) => {
+	const responseSlug = await fetch(
+		`${urlBackendApi}/medias/slug/${fileSlug}`
+	);
 
 	//return responseSlug.status === 200 ? true : false;
 	return await responseSlug.json();

@@ -1,4 +1,4 @@
-function fileSlug(fileName) {
+function getFileSlug(fileName: string) {
 	return fileName
 		.toLowerCase()
 		.replace(/[âäáàã]+/g, 'a')
@@ -17,6 +17,6 @@ function fileSlug(fileName) {
 		.replace(/-+$/, ''); // Trim - from end of text
 }
 
-const defaultFuntions = { fileSlug };
+const defaultFuntions = { getFileSlug };
 
 export default defaultFuntions;

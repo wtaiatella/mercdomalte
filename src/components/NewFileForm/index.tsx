@@ -2,9 +2,10 @@ import { Form, Input, Button, message } from 'antd';
 
 import { Container } from './styles';
 
-import { ReactNode, useState, useEffect } from 'react';
+import { ReactNode, useState, useEffect, useContext } from 'react';
 
 import { RcFile } from 'antd/lib/upload';
+import { UserContext } from '../../contexts/UserContext';
 interface fileDataProp {
 	title?: string;
 	name: string;
@@ -24,13 +25,14 @@ export default function NewFileForm({
 	s3UploadSignedUrl: string;
 }) {
 	const [categories, setCategories] = useState([]);
-
-	const API = process.env.BACKEND_API;
+	const { urlBackendApi } = useContext(UserContext);
 
 	useEffect(() => {
 		console.log('useeffect');
 		const fetchCategories = async () => {
-			const dataCategories = await fetch(`${API}/mediascategories`);
+			const dataCategories = await fetch(
+				`${urlBackendApi}/mediascategories`
+			);
 			const jsonCategories = await dataCategories.json();
 			setCategories(jsonCategories);
 
@@ -54,7 +56,7 @@ export default function NewFileForm({
 		const jsonAddFile = JSON.stringify(addFile);
 		console.log(jsonAddFile);
 
-		fetch(`${API}/medias`, {
+		fetch(`${urlBackendApi}/medias`, {
 			method: 'POST',
 			body: JSON.stringify(addFile),
 			headers: { 'Content-type': 'application/json; charset=UTF-8' },

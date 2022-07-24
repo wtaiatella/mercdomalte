@@ -4,7 +4,7 @@ import React from 'react';
 import { Title } from '../../components/Common/Title';
 import MyAccount from '../../components/MyAccount';
 
-export default function MinhaConta() {
+export default function MinhaConta(BACKEND_API) {
 	return (
 		<>
 			<Head>
