@@ -2,36 +2,78 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox, message, Alert } from 'antd';
 
 import { LockOutlined } from '@ant-design/icons';
 import { MdOutlineEmail } from 'react-icons/md';
 
 import LostPaswordModal from '../../components/LostPasswordModal';
+import { Title } from '../../components/Common/Title';
+import { TextBlock } from '../../components/Common/TextBlock';
+
 import { Container } from './styles';
+
 import { UserContext } from '../../contexts/UserContext';
 
 export default function LoginForm() {
-	const { isModalVisible, setIsModalVisible } = useContext(UserContext);
+	const { isModalVisible, setIsModalVisible, session, setSession } =
+		useContext(UserContext);
 	const router = useRouter();
 
 	const showModal = () => {
 		setIsModalVisible(true);
 	};
 
-	const onFinish = (values: any) => {
+	const onFinish = async (values: any) => {
 		console.log('Received values of form: ', values);
-		router.push('/myaccount');
+		const { email, password } = values;
+
+		const response = await fetch('http://localhost:5500/auth/login', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+			},
+			body: JSON.stringify({
+				email,
+				password,
+			}),
+		});
+
+		const resp = await response.json();
+		console.log(resp);
+
+		if (resp.status) {
+			const { name, accessToken } = resp.data;
+			const code = resp.code;
+			setSession({
+				accessToken,
+				email,
+				name,
+				code,
+			});
+			localStorage.setItem('token', accessToken);
+			router.push('/myaccount');
+		} else {
+			const code = resp.code;
+			setSession({
+				code,
+			});
+		}
 	};
 
 	const onFinishFailed = (errorInfo: any) => {
 		console.log('Failed:', errorInfo);
-		router.push('/myaccount');
 	};
 
 	return (
 		<>
 			<Container>
+				<Title>Identificação do usuário</Title>
+				<TextBlock>
+					Faça o seu login e tenha acesso a todos os documentos do
+					site.
+				</TextBlock>
 				<Form
 					name='login'
 					className='login-form'
@@ -59,6 +101,7 @@ export default function LoginForm() {
 							}
 							placeholder='Digite seu e-mail'
 							allowClear
+							autoComplete='login-form email'
 						/>
 					</Form.Item>
 					<Form.Item
@@ -77,27 +120,8 @@ export default function LoginForm() {
 							}
 							placeholder='Password'
 							allowClear
+							autoComplete='login-form password'
 						/>
-					</Form.Item>
-
-					<Form.Item
-						className='formOptions'
-						wrapperCol={{ offset: 5 }}
-					>
-						<Form.Item
-							name='remember'
-							valuePropName='checked'
-							noStyle
-						>
-							<Checkbox>Lembrar-me</Checkbox>
-						</Form.Item>
-
-						<Button
-							onClick={showModal}
-							className='login-form-forgot'
-						>
-							Esqueceu a senha?
-						</Button>
 					</Form.Item>
 
 					<Form.Item wrapperCol={{ offset: 5 }}>
@@ -111,6 +135,36 @@ export default function LoginForm() {
 						<Link href='/register'>Registre agora!</Link>
 					</Form.Item>
 				</Form>
+				{session.code === 404 ? (
+					<Alert
+						message='Usuario não encontrado'
+						showIcon
+						type='info'
+						closable
+						action={
+							<Button size='small' danger>
+								Registre-se agora
+							</Button>
+						}
+					/>
+				) : (
+					''
+				)}
+				{session.code === 400 ? (
+					<Alert
+						message='Sua senha está incorreta, digite novamente ou clique ao lado para atualizar.'
+						showIcon
+						type='warning'
+						closable
+						action={
+							<button onClick={showModal}>
+								Atualizar senha.
+							</button>
+						}
+					/>
+				) : (
+					''
+				)}
 			</Container>
 
 			<LostPaswordModal isOpen={isModalVisible} />

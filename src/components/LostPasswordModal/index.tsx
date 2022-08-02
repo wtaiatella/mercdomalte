@@ -29,15 +29,16 @@ export default function LostPaswordModal({ isOpen }: LostPasswordProps) {
 	return (
 		<>
 			<Modal
-				title='Perdeu a sua senha?'
+				title='Esqueceu a sua senha?'
 				visible={isOpen}
 				onCancel={handleCancel}
 				footer={[]}
 			>
 				<p>
-					Informe seu e-mail que enviaremos instruções para
-					recuperá-la.
+					Não se preocupe, enviaremos para seu email uma nova senha.
+					Assim você poderá continuar acesando o painel de sua conta.
 				</p>
+				<p></p>
 				<Form
 					name='lostPassword'
 					className='lostpassword-form'

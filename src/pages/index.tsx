@@ -7,7 +7,7 @@ import { useContext } from 'react';
 import { UserContext } from '../contexts/UserContext';
 
 export const getServerSideProps = async () => {
-	const responseMedias = await fetch(`${API}/medias`);
+	const responseMedias = await fetch(`${API}/file`);
 	//console.log(`Aqui está a responseMedia`);
 	//console.log(responseMedias);
 

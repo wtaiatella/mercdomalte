@@ -1,20 +1,32 @@
+import { stringify } from 'querystring';
 import { createContext, useState } from 'react';
 
-export const UserContext = createContext();
+// interface sessionProps {
+// 	accesToken: string;
+// 	email: string;
+// 	name: string;
+// }
+
+// interface AppContextInterface {
+// 	isModalVisible: boolean;
+// 	setIsModalVisible: () => {};
+// 	urlBackendApi: string;
+// 	setUrlBackendApi: () => {};
+// 	session: sessionProps;
+// 	setSession: () => {};
+// }
+
+export const UserContext = createContext(null);
 
 export const UserStorage = ({ children }) => {
-	/*
-	interface fileDataProp {
-		name: string;
-		slug?: string;
-		size: number;
-		type: string;
-		icon: string;
-	}
-	*/
-
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [urlBackendApi, setUrlBackendApi] = useState('');
+	const [session, setSession] = useState({
+		accesToken: '',
+		email: '',
+		name: '',
+		code: 0,
+	});
 
 	return (
 		<UserContext.Provider
@@ -23,6 +35,8 @@ export const UserStorage = ({ children }) => {
 				setIsModalVisible,
 				urlBackendApi,
 				setUrlBackendApi,
+				session,
+				setSession,
 			}}
 		>
 			{children}
