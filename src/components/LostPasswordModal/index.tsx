@@ -1,7 +1,8 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Form, Modal, Input, Button } from 'antd';
 import { MdOutlineEmail } from 'react-icons/md';
 import { UserContext } from '../../contexts/UserContext';
+import tools from './../../util/tools';
 
 interface LostPasswordProps {
 	isOpen: boolean;
@@ -9,76 +10,60 @@ interface LostPasswordProps {
 
 export default function LostPaswordModal({ isOpen }: LostPasswordProps) {
 	const { setIsModalVisible } = useContext(UserContext);
+	const [confirmLoading, setConfirmLoading] = useState(false);
+	const [modalText, setModalText] = useState('Content of the modal');
+	const [email, setEmail] = useState('Content of the modal');
+
+	useEffect(() => {
+		if (confirmLoading === false)
+			setModalText(
+				'Não se preocupe, enviaremos para seu email uma nova senha. Assim você poderá continuar acessando o painel de sua conta.'
+			);
+	}, [confirmLoading]);
 
 	const handleEnviar = () => {
-		setIsModalVisible(false);
+		setModalText('Enviando para ' + email);
+		const newPassword = tools.getPassword(6);
+
+		setConfirmLoading(true);
 	};
 
 	const handleCancel = () => {
 		setIsModalVisible(false);
-	};
-
-	const onFinish = (values: any) => {
-		console.log('Received values of form: ', values);
-	};
-
-	const onFinishFailed = (errorInfo: any) => {
-		console.log('Failed:', errorInfo);
+		setConfirmLoading(false);
 	};
 
 	return (
 		<>
 			<Modal
-				title='Perdeu a sua senha?'
+				title='Esqueceu a sua senha?'
 				visible={isOpen}
 				onCancel={handleCancel}
-				footer={[]}
+				onOk={handleEnviar}
+				confirmLoading={confirmLoading}
+				okText='Enviar'
 			>
-				<p>
-					Informe seu e-mail que enviaremos instruções para
-					recuperá-la.
-				</p>
-				<Form
-					name='lostPassword'
-					className='lostpassword-form'
-					initialValues={{ remember: false }}
-					labelCol={{ span: 5 }}
-					wrapperCol={{ span: 16 }}
-					onFinish={onFinish}
-					onFinishFailed={onFinishFailed}
-					size='large'
+				<p>{modalText}</p>
+				<Form.Item
+					label='E-mail'
+					name='email'
+					rules={[
+						{
+							required: true,
+							type: 'email',
+							message: 'Por favor, digite seu e-mail',
+						},
+					]}
 				>
-					<Form.Item
-						label='E-mail'
-						name='email'
-						rules={[
-							{
-								required: true,
-								type: 'email',
-								message: 'Por favor, digite seu e-mail',
-							},
-						]}
-					>
-						<Input
-							prefix={
-								<MdOutlineEmail className='site-form-item-icon' />
-							}
-							placeholder='Digite seu e-mail'
-							allowClear
-						/>
-					</Form.Item>
-
-					<Form.Item wrapperCol={{ offset: 5 }}>
-						<Button
-							type='primary'
-							htmlType='submit'
-							className='login-form-button'
-							onClick={handleEnviar}
-						>
-							Enviar
-						</Button>
-					</Form.Item>
-				</Form>
+					<Input
+						prefix={
+							<MdOutlineEmail className='site-form-item-icon' />
+						}
+						placeholder='Digite seu e-mail'
+						allowClear
+						onChange={(e) => setEmail(e.target.value)}
+					/>
+				</Form.Item>
 			</Modal>
 		</>
 	);

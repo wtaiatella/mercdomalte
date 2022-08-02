@@ -17,6 +17,18 @@ function getFileSlug(fileName: string) {
 		.replace(/-+$/, ''); // Trim - from end of text
 }
 
-const defaultFuntions = { getFileSlug };
+function getPassword(tamanho: number) {
+	var stringAleatoria = '';
+	var caracteres =
+		'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	for (var i = 0; i < tamanho; i++) {
+		stringAleatoria += caracteres.charAt(
+			Math.floor(Math.random() * caracteres.length)
+		);
+	}
+	return stringAleatoria;
+}
+
+const defaultFuntions = { getFileSlug, getPassword };
 
 export default defaultFuntions;
