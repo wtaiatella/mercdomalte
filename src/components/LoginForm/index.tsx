@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 import { Form, Input, Button, Checkbox, message, Alert } from 'antd';
 
@@ -20,6 +20,12 @@ export default function LoginForm() {
 		useContext(UserContext);
 	const router = useRouter();
 
+	useEffect(() => {
+		const code = 0;
+		setSession({
+			code,
+		});
+	}, []);
 	const showModal = () => {
 		setIsModalVisible(true);
 	};
@@ -142,15 +148,25 @@ export default function LoginForm() {
 						type='info'
 						closable
 						action={
-							<Button size='small' danger>
+							<Button
+								size='small'
+								danger
+								onClick={() => router.push('/register')}
+							>
 								Registre-se agora
 							</Button>
 						}
+						onClose={() => {
+							const code = 0;
+							setSession({
+								code,
+							});
+						}}
 					/>
 				) : (
 					''
 				)}
-				{session.code === 400 ? (
+				{session.code === 401 ? (
 					<Alert
 						message='Sua senha está incorreta, digite novamente ou clique ao lado para atualizar.'
 						showIcon
@@ -161,6 +177,12 @@ export default function LoginForm() {
 								Atualizar senha.
 							</button>
 						}
+						onClose={() => {
+							const code = 0;
+							setSession({
+								code,
+							});
+						}}
 					/>
 				) : (
 					''

@@ -207,6 +207,12 @@ export default function RegisterForm() {
 						showIcon
 						type='warning'
 						closable
+						onClose={() => {
+							const code = 0;
+							setSession({
+								code,
+							});
+						}}
 					/>
 				) : (
 					''

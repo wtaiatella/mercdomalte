@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { Form, Modal, Input, Button } from 'antd';
 import { MdOutlineEmail } from 'react-icons/md';
 import { UserContext } from '../../contexts/UserContext';
@@ -12,25 +13,58 @@ export default function LostPaswordModal({ isOpen }: LostPasswordProps) {
 	const { setIsModalVisible } = useContext(UserContext);
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [modalText, setModalText] = useState('Content of the modal');
-	const [email, setEmail] = useState('Content of the modal');
+	const [email, setEmail] = useState('');
+	const [textInitialModal, setTextInitialModal] = useState(true);
+
+	const router = useRouter();
 
 	useEffect(() => {
-		if (confirmLoading === false)
+		if (textInitialModal === true)
 			setModalText(
 				'Não se preocupe, enviaremos para seu email uma nova senha. Assim você poderá continuar acessando o painel de sua conta.'
 			);
-	}, [confirmLoading]);
+	}, [textInitialModal]);
 
-	const handleEnviar = () => {
-		setModalText('Enviando para ' + email);
-		const newPassword = tools.getPassword(6);
-
+	const handleEnviar = async () => {
+		const password = tools.getPassword(6);
+		setModalText('Enviando senha para ' + email);
 		setConfirmLoading(true);
+		setTextInitialModal(false);
+
+		//TODO: post com email e senha para salvar em banco e enviar email
+		//no back end tem que atualizar o banco e envia email
+
+		const response = await fetch(
+			'http://localhost:5500/auth/recoverypassword',
+			{
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: 'application/json',
+				},
+				body: JSON.stringify({
+					email,
+					password,
+				}),
+			}
+		);
+
+		const resp = await response.json();
+		console.log(resp);
+
+		if (resp.status) {
+			setModalText('Senha enviada com sucesso! Confira em seu e-amil.');
+			setConfirmLoading(false);
+		} else {
+			setModalText('Falha no envio, tente novamente.');
+			setConfirmLoading(false);
+		}
 	};
 
 	const handleCancel = () => {
 		setIsModalVisible(false);
 		setConfirmLoading(false);
+		setTextInitialModal(true);
 	};
 
 	return (
@@ -42,6 +76,7 @@ export default function LostPaswordModal({ isOpen }: LostPasswordProps) {
 				onOk={handleEnviar}
 				confirmLoading={confirmLoading}
 				okText='Enviar'
+				destroyOnClose
 			>
 				<p>{modalText}</p>
 				<Form.Item
