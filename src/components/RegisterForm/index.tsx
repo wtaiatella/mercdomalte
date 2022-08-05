@@ -27,7 +27,7 @@ export default function RegisterForm() {
 		if (password1 === password2) {
 			const password = password1;
 			const response = await fetch(
-				'http://localhost:5500/auth/register',
+				'http://localhost:5500/user/register',
 				{
 					method: 'POST',
 					headers: {
@@ -192,7 +192,7 @@ export default function RegisterForm() {
 							</button>
 						}
 						onClose={() => {
-							const code = 0;
+							const code = 50;
 							setSession({
 								code,
 							});
@@ -208,7 +208,7 @@ export default function RegisterForm() {
 						type='warning'
 						closable
 						onClose={() => {
-							const code = 0;
+							const code = 60;
 							setSession({
 								code,
 							});

@@ -10,6 +10,8 @@ export function SignInButton() {
 	const [user, setUser] = useState<string>('');
 
 	const router = useRouter();
+	console.log('Entrada signin button');
+	console.log(session);
 
 	useEffect(() => {
 		console.log(`signin`);
@@ -36,6 +38,12 @@ export function SignInButton() {
 		router.push('/login');
 	};
 
+	const handleMyAccount = () => {
+		console.log('botão my account');
+		console.log(session);
+		router.push('/myaccount');
+	};
+
 	return (
 		<>
 			{user ? (
@@ -43,7 +51,9 @@ export function SignInButton() {
 					<div>
 						{user}
 						<div>
-							<a href='/myaccount'>Minha conta |</a>
+							<button onClick={handleMyAccount}>
+								Minha conta
+							</button>
 
 							<button onClick={handleLogout}> Logout</button>
 						</div>

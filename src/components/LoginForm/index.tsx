@@ -20,12 +20,6 @@ export default function LoginForm() {
 		useContext(UserContext);
 	const router = useRouter();
 
-	useEffect(() => {
-		const code = 0;
-		setSession({
-			code,
-		});
-	}, []);
 	const showModal = () => {
 		setIsModalVisible(true);
 	};
@@ -34,7 +28,7 @@ export default function LoginForm() {
 		console.log('Received values of form: ', values);
 		const { email, password } = values;
 
-		const response = await fetch('http://localhost:5500/auth/login', {
+		const response = await fetch('http://localhost:5500/user/login', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -63,6 +57,7 @@ export default function LoginForm() {
 		} else {
 			const code = resp.code;
 			setSession({
+				...session,
 				code,
 			});
 		}
@@ -157,7 +152,7 @@ export default function LoginForm() {
 							</Button>
 						}
 						onClose={() => {
-							const code = 0;
+							const code = 30;
 							setSession({
 								code,
 							});
@@ -178,7 +173,7 @@ export default function LoginForm() {
 							</button>
 						}
 						onClose={() => {
-							const code = 0;
+							const code = 40;
 							setSession({
 								code,
 							});

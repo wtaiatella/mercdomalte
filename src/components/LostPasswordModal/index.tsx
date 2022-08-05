@@ -26,7 +26,7 @@ export default function LostPaswordModal({ isOpen }: LostPasswordProps) {
 	}, [textInitialModal]);
 
 	const handleEnviar = async () => {
-		const password = tools.getPassword(6);
+		const passwordnew = tools.getPassword(6);
 		setModalText('Enviando senha para ' + email);
 		setConfirmLoading(true);
 		setTextInitialModal(false);
@@ -35,7 +35,7 @@ export default function LostPaswordModal({ isOpen }: LostPasswordProps) {
 		//no back end tem que atualizar o banco e envia email
 
 		const response = await fetch(
-			'http://localhost:5500/auth/recoverypassword',
+			'http://localhost:5500/user/recoverypassword',
 			{
 				method: 'PUT',
 				headers: {
@@ -44,7 +44,7 @@ export default function LostPaswordModal({ isOpen }: LostPasswordProps) {
 				},
 				body: JSON.stringify({
 					email,
-					password,
+					passwordnew,
 				}),
 			}
 		);

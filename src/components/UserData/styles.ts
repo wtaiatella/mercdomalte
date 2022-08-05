@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-	width: 500px;
+	width: 700px;
 	margin: 0 auto;
 	padding: 0 1rem;
 
@@ -14,7 +14,7 @@ export const Container = styled.div`
 	}
 
 	.ant-form-item-control {
-		max-width: 100%;
+		max-width: 60%;
 	}
 
 	.ant-form-item-control-input-content {
