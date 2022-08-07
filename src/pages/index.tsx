@@ -3,34 +3,36 @@ import { Title } from '../components/Common/Title';
 import { TextBlock } from '../components/Common/TextBlock';
 import { Dashboard } from '../components/Dashboard/Index';
 import { API } from './../services/constants';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { UserContext } from '../contexts/UserContext';
 
 export const getServerSideProps = async () => {
-	const responseMedias = await fetch(`${API}/file`);
-	//console.log(`Aqui está a responseMedia`);
-	//console.log(responseMedias);
+	const responsefiles = await fetch(`${API}/file`);
+	//console.log(`Aqui está o responsefile`);
+	//console.log(responsefiles);
 
-	const medias = await responseMedias.json();
-	console.log(`Aqui estão as medias do site`);
-	console.log(medias);
-
-	const BACKEND_API = process.env.NEXT_PUBLIC_BACKEND_API;
+	const files = await responsefiles.json();
+	console.log(`Aqui estão os files do site`);
+	console.log(files);
 
 	return {
 		props: {
-			medias, // props for the Home component
-			BACKEND_API,
+			files, // props for the Home component
+			API,
 		},
 	};
 };
 
-export default function Home({ medias, BACKEND_API }) {
-	console.log(medias);
-	console.log(BACKEND_API);
+export default function Home({ files, API }) {
 	const { setUrlBackendApi } = useContext(UserContext);
+	console.log('Página Home');
 
-	setUrlBackendApi(BACKEND_API);
+	useEffect(() => {
+		console.log(API);
+		setUrlBackendApi(API);
+	}, [API]);
+
+	console.log(files);
 
 	return (
 		<>
@@ -45,7 +47,7 @@ export default function Home({ medias, BACKEND_API }) {
 					Se tiver algum documento que possa contribuir, faça o login
 					e carrege seu arquivo!
 				</TextBlock>
-				<Dashboard medias={medias} />
+				<Dashboard files={files} />
 			</div>
 		</>
 	);

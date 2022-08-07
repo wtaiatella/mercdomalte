@@ -21,35 +21,33 @@ interface DataType {
 	title: string;
 	name: string;
 	size: number;
-	categories: string[];
 }
 
 type DataIndex = keyof DataType;
 
-export function Dashboard({ medias }) {
+export function Dashboard({ files }) {
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef<InputRef>(null);
 	const { urlBackendApi } = useContext(UserContext);
 
 	console.log('dentro do dashboard');
-	console.log(medias);
+	console.log(files);
 
 	const [data, setData] = useState<DataType[]>([]);
 
 	useEffect(() => {
-		const mediaList = medias.map((media) => {
+		const fileList = files.map((file) => {
 			return {
-				key: media.id,
+				key: file.id,
 				icon: <SearchOutlined />,
-				title: media.title,
-				name: media.name,
-				size: media.size / 1000,
-				categories: [media.category.name],
+				title: file.title,
+				name: file.name,
+				size: file.size / 1000,
 			};
 		});
-		setData(mediaList);
-	}, [medias]);
+		setData(fileList);
+	}, [files]);
 
 	const handleSearch = (
 		selectedKeys: string[],
@@ -74,8 +72,6 @@ export function Dashboard({ medias }) {
 			urlBackendApi
 		);
 		open(url.slice(1, -1), '_blank');
-		//await fetch(url.slice(1, -1));
-		//await fetch(url);
 		console.log(url);
 	};
 
@@ -200,25 +196,11 @@ export function Dashboard({ medias }) {
 			dataIndex: 'size',
 			key: 'size',
 			width: '15%',
-			sorter: (a, b) => a.categories.length - b.categories.length,
+			sorter: (a, b) => a.size - b.size,
 			sortDirections: ['descend', 'ascend'],
 			render: (_, { size }) => <>{size} kb</>,
 		},
-		{
-			title: 'Categoria',
-			dataIndex: 'categories',
-			key: 'categories',
-			width: '15%',
-			...getColumnSearchProps('categories'),
 
-			render: (_, { categories }) => (
-				<>
-					{categories.map((category) => {
-						return <Tag key={category}>{category}</Tag>;
-					})}
-				</>
-			),
-		},
 		{
 			title: 'Action',
 			key: 'operation',
