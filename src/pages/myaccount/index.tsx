@@ -1,11 +1,12 @@
 import Head from 'next/head';
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { Title } from '../../components/Common/Title';
 import MyAccount from '../../components/MyAccount';
 import { AdminAuthProvider } from '../../contexts/auth';
+import { UserContext } from '../../contexts/UserContext';
 
-export default function MinhaConta(BACKEND_API) {
+export default function MinhaConta() {
 	return (
 		<AdminAuthProvider>
 			<Head>

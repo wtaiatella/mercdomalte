@@ -67,7 +67,7 @@ const NewFile = () => {
 			setFileData(fileDataDroped);
 		} else {
 			message.error(
-				`O arquivo ${fileDroped.name} ja existe em nossa base de dados.`
+				`O arquivo ${fileDroped.name} já existe em nossa base de dados.`
 			);
 		}
 	};

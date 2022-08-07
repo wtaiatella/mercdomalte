@@ -24,22 +24,8 @@ export default function NewFileForm({
 	fileUploaded: RcFile;
 	s3UploadSignedUrl: string;
 }) {
-	const [categories, setCategories] = useState([]);
-	const { urlBackendApi } = useContext(UserContext);
-
-	useEffect(() => {
-		console.log('useeffect');
-		const fetchCategories = async () => {
-			const dataCategories = await fetch(
-				`${urlBackendApi}/mediascategories`
-			);
-			const jsonCategories = await dataCategories.json();
-			setCategories(jsonCategories);
-
-			console.log(`Aqui estão as medias do site`);
-			console.log(jsonCategories);
-		};
-	}, []);
+	const { urlBackendApi, session } = useContext(UserContext);
+	const { email } = session;
 
 	const onFinish = async (values: any) => {
 		console.log('Received values of form: ', values);
@@ -50,13 +36,13 @@ export default function NewFileForm({
 			icon: 'SearchOutlined',
 			type: fileData.type,
 			size: fileData.size,
-			categoryId: 'cl5quwha10013a8qi64lt7cpz',
+			email: email,
 		};
 
 		const jsonAddFile = JSON.stringify(addFile);
 		console.log(jsonAddFile);
 
-		fetch(`${urlBackendApi}/medias`, {
+		fetch(`${urlBackendApi}/file`, {
 			method: 'POST',
 			body: JSON.stringify(addFile),
 			headers: { 'Content-type': 'application/json; charset=UTF-8' },

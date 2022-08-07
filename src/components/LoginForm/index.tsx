@@ -44,13 +44,14 @@ export default function LoginForm() {
 		console.log(resp);
 
 		if (resp.status) {
-			const { name, accessToken } = resp.data;
+			const { name, accessToken, id } = resp.data;
 			const code = resp.code;
 			setSession({
 				accessToken,
 				email,
 				name,
 				code,
+				id,
 			});
 			localStorage.setItem('token', accessToken);
 			router.push('/myaccount');
