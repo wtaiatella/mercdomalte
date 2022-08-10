@@ -16,8 +16,13 @@ import { Container } from './styles';
 import { UserContext } from '../../contexts/UserContext';
 
 export default function LoginForm() {
-	const { isModalVisible, setIsModalVisible, session, setSession } =
-		useContext(UserContext);
+	const {
+		isModalVisible,
+		setIsModalVisible,
+		session,
+		setSession,
+		urlBackendApi,
+	} = useContext(UserContext);
 	const router = useRouter();
 
 	const showModal = () => {
@@ -28,7 +33,7 @@ export default function LoginForm() {
 		console.log('Received values of form: ', values);
 		const { email, password } = values;
 
-		const response = await fetch('http://localhost:5500/user/login', {
+		const response = await fetch(`${urlBackendApi}/user/login`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
