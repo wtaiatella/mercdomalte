@@ -27,9 +27,6 @@ export function Header() {
 				placeholder='Procure seu arquivo'
 				allowClear
 				onChange={onSearch}
-				style={{
-					width: 600,
-				}}
 			/>
 			<SignInButton />
 		</Container>

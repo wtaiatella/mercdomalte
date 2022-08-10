@@ -225,7 +225,7 @@ export function UserDashboard() {
 			render: (_, { size }) => <>{size} kb</>,
 		},
 		{
-			title: 'Action',
+			title: 'Apagar',
 			key: 'operation',
 			fixed: 'right',
 			width: 100,
