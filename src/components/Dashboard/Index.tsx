@@ -202,7 +202,7 @@ export function Dashboard({ files }) {
 		},
 
 		{
-			title: 'Action',
+			title: 'Download',
 			key: 'operation',
 			fixed: 'right',
 			width: 100,

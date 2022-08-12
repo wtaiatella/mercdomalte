@@ -49,13 +49,13 @@ export function SignInButton() {
 			{user ? (
 				<Logout>
 					<div>
-						{user}
+						<p>{user}</p>
 						<div>
 							<button onClick={handleMyAccount}>
 								Minha conta
 							</button>
-
-							<button onClick={handleLogout}> Logout</button>
+							<span>|</span>
+							<button onClick={handleLogout}> Sair</button>
 						</div>
 					</div>
 					<AiOutlineUser />

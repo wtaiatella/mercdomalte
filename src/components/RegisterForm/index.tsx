@@ -12,8 +12,13 @@ import { MdOutlineEmail } from 'react-icons/md';
 import { useRouter } from 'next/router';
 
 export default function RegisterForm() {
-	const { isModalVisible, setIsModalVisible, setSession, session } =
-		useContext(UserContext);
+	const {
+		isModalVisible,
+		setIsModalVisible,
+		setSession,
+		session,
+		urlBackendApi,
+	} = useContext(UserContext);
 	const showModal = () => {
 		setIsModalVisible(true);
 	};
@@ -26,21 +31,18 @@ export default function RegisterForm() {
 
 		if (password1 === password2) {
 			const password = password1;
-			const response = await fetch(
-				'http://localhost:5500/user/register',
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						Accept: 'application/json',
-					},
-					body: JSON.stringify({
-						name,
-						email,
-						password,
-					}),
-				}
-			);
+			const response = await fetch(`${urlBackendApi}/user/register`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					Accept: 'application/json',
+				},
+				body: JSON.stringify({
+					name,
+					email,
+					password,
+				}),
+			});
 			const resp = await response.json();
 			console.log('Resposta do registro');
 			console.log(resp);

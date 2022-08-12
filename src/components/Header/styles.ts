@@ -5,5 +5,11 @@ export const Container = styled.header`
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	border-bottom: 2px solid;
+	border-bottom: 2px solid rgba(110, 52, 53, 0.7);
+
+	.ant-input-group-wrapper {
+		max-width: 50%;
+		padding: 0 1.5rem;
+		margin: 0 auto;
+	}
 `;

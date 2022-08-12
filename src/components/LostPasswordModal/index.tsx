@@ -10,7 +10,7 @@ interface LostPasswordProps {
 }
 
 export default function LostPaswordModal({ isOpen }: LostPasswordProps) {
-	const { setIsModalVisible } = useContext(UserContext);
+	const { setIsModalVisible, urlBackendApi } = useContext(UserContext);
 	const [confirmLoading, setConfirmLoading] = useState(false);
 	const [modalText, setModalText] = useState('Content of the modal');
 	const [email, setEmail] = useState('');
@@ -34,20 +34,17 @@ export default function LostPaswordModal({ isOpen }: LostPasswordProps) {
 		//TODO: post com email e senha para salvar em banco e enviar email
 		//no back end tem que atualizar o banco e envia email
 
-		const response = await fetch(
-			'http://localhost:5500/user/recoverypassword',
-			{
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-					Accept: 'application/json',
-				},
-				body: JSON.stringify({
-					email,
-					passwordnew,
-				}),
-			}
-		);
+		const response = await fetch(`${urlBackendApi}/user/recoverypassword`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+			},
+			body: JSON.stringify({
+				email,
+				passwordnew,
+			}),
+		});
 
 		const resp = await response.json();
 		console.log(resp);

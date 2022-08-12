@@ -11,14 +11,14 @@ import { useContext, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 
 export default function UserData() {
-	const { session, setSession } = useContext(UserContext);
+	const { session, setSession, urlBackendApi } = useContext(UserContext);
 	const [updatePassword, setUpdatePassword] = useState(false);
 
 	const { name, email } = session;
 
 	const onFinishUpdadeName = async (values: any) => {
 		console.log('Received values of form: ', values);
-		const response = await fetch('http://localhost:5500/user/update', {
+		const response = await fetch(`${urlBackendApi}/user/update`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -56,21 +56,18 @@ export default function UserData() {
 		console.log('Received values of form: ', values);
 		const { password, passwordnew, confirmPassword } = values;
 
-		const response = await fetch(
-			'http://localhost:5500/user/updatepassword',
-			{
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-					Accept: 'application/json',
-				},
-				body: JSON.stringify({
-					email,
-					password,
-					passwordnew,
-				}),
-			}
-		);
+		const response = await fetch(`${urlBackendApi}/user/updatepassword`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+			},
+			body: JSON.stringify({
+				email,
+				password,
+				passwordnew,
+			}),
+		});
 
 		const resp = await response.json();
 		console.log(resp);
