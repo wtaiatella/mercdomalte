@@ -8,8 +8,6 @@ import { LockOutlined } from '@ant-design/icons';
 import { MdOutlineEmail } from 'react-icons/md';
 
 import LostPaswordModal from '../../components/LostPasswordModal';
-import { Title } from '../../components/Common/Title';
-import { TextBlock } from '../../components/Common/TextBlock';
 
 import { Container } from './styles';
 
@@ -76,11 +74,6 @@ export default function LoginForm() {
 	return (
 		<>
 			<Container>
-				<Title>Identificação do usuário</Title>
-				<TextBlock>
-					Faça o seu login e tenha acesso a todos os documentos do
-					site.
-				</TextBlock>
 				<Form
 					name='login'
 					className='login-form'
@@ -137,16 +130,20 @@ export default function LoginForm() {
 							htmlType='submit'
 							className='login-form-button'
 						>
-							Log in
+							Login
 						</Button>
-						<Link href='/register'>Registre agora!</Link>
+						<Link href='/register'>
+							<a className='form-register-now'>
+								Não possui registro ainda? Clique aqui!
+							</a>
+						</Link>
 					</Form.Item>
 				</Form>
 				{session.code === 404 ? (
 					<Alert
 						message='Usuario não encontrado'
 						showIcon
-						type='info'
+						type='error'
 						closable
 						action={
 							<Button
@@ -169,14 +166,14 @@ export default function LoginForm() {
 				)}
 				{session.code === 401 ? (
 					<Alert
-						message='Sua senha está incorreta, digite novamente ou clique ao lado para atualizar.'
+						message='Senha incorreta, digite novamente ou clique ao lado para atualizar.'
 						showIcon
-						type='warning'
+						type='error'
 						closable
 						action={
-							<button onClick={showModal}>
-								Atualizar senha.
-							</button>
+							<Button size='small' danger onClick={showModal}>
+								Atualizar senha
+							</Button>
 						}
 						onClose={() => {
 							const code = 40;

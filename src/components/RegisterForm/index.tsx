@@ -186,12 +186,12 @@ export default function RegisterForm() {
 					<Alert
 						message='Usuario já cadastrado. Esqueceu a sua senha? Clique ao lado para atualizar.'
 						showIcon
-						type='warning'
+						type='error'
 						closable
 						action={
-							<button onClick={showModal}>
-								Atualizar senha.
-							</button>
+							<Button size='small' danger onClick={showModal}>
+								Atualizar senha
+							</Button>
 						}
 						onClose={() => {
 							const code = 50;

@@ -1,4 +1,3 @@
-import Router from 'next/router';
 import React, {
 	createContext,
 	ReactNode,
@@ -22,7 +21,6 @@ export const AdminAuthProvider = ({ children }: IAdminAuthProvider) => {
 	useEffect(() => {
 		(async () => {
 			console.log('auth');
-			//const token = localStorage.getItem('token');
 			console.log(session);
 
 			if (session.accessToken) {

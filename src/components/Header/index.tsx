@@ -11,7 +11,7 @@ export function Header() {
 
 	return (
 		<Container>
-			<Link href='/'>
+			<Link href='/' className='logo'>
 				<a>
 					<Image
 						src='/images/logo.png'
@@ -28,7 +28,9 @@ export function Header() {
 				allowClear
 				onChange={onSearch}
 			/>
-			<SignInButton />
+			<div className='signin'>
+				<SignInButton />
+			</div>
 		</Container>
 	);
 }

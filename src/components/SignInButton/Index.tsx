@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
 import { useRouter } from 'next/router';
 
-export function SignInButton() {
+export const SignInButton = () => {
 	const { session, setSession } = useContext(UserContext);
 	const [user, setUser] = useState<string>('');
 
@@ -47,25 +47,34 @@ export function SignInButton() {
 	return (
 		<>
 			{user ? (
-				<Logout>
-					<div>
-						<p>{user}</p>
+				<Logout className='signin'>
+					<div className='user-wrapper'>
+						<p className='user-name'>{user}</p>
 						<div>
-							<button onClick={handleMyAccount}>
+							<button
+								onClick={handleMyAccount}
+								className='user-button'
+							>
 								Minha conta
 							</button>
 							<span>|</span>
-							<button onClick={handleLogout}> Sair</button>
+							<button
+								onClick={handleLogout}
+								className='user-button'
+							>
+								{' '}
+								Sair
+							</button>
 						</div>
 					</div>
 					<AiOutlineUser />
 				</Logout>
 			) : (
-				<Login onClick={handleLogin}>
+				<Login onClick={handleLogin} className='signin'>
 					Entrar
 					<AiOutlineUser />
 				</Login>
 			)}
 		</>
 	);
-}
+};

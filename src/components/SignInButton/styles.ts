@@ -6,27 +6,33 @@ export const Logout = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	font-size: 1rem;
-	min-width: 240px;
+	max-width: 250px;
 	color: rgba(110, 52, 53, 1);
+	grid-area: singin;
 
-	p {
-		margin-bottom: 0.3rem;
+	.user-wrapper {
+		margin-right: 1rem;
+
+		.user-name {
+			margin-bottom: 0.3rem;
+		}
+
+		.user-button {
+			border: none;
+			background-color: transparent;
+		}
+
+		.user-button:hover {
+			color: rgba(110, 52, 53, 0.3);
+		}
+
+		span {
+			margin: 0 0.5rem;
+		}
 	}
 
-	button {
-		border: none;
-	}
-
-	button:hover {
-		color: rgba(110, 52, 53, 0.3);
-	}
-
-	span {
-		margin: 0 0.5rem;
-	}
 	svg {
-		margin-left: 1rem;
-		font-size: 30px;
+		font-size: 35px;
 	}
 `;
 
@@ -35,9 +41,16 @@ export const Login = styled.a`
 	display: flex;
 	align-items: center;
 	font-size: 1.1rem;
+	color: rgba(110, 52, 53, 1);
+	grid-area: singin;
+
+	:hover {
+		color: rgba(110, 52, 53, 0.3);
+	}
 
 	svg {
 		margin-left: 1rem;
 		font-size: 1.5rem;
+		align-items: center;
 	}
 `;
