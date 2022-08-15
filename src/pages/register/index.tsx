@@ -12,14 +12,14 @@ export default function Register() {
 			</Head>
 			<main
 				style={{
-					width: '500px',
+					maxWidth: '650px',
 					margin: '0 auto',
-					padding: '0 1rem',
+					padding: '0 1.5rem',
 				}}
 			>
 				<Title>Cadastro de usuário</Title>
 				<TextBlock>
-					Faça o seu login e tenha acesso a todos os documentos do
+					Faça o seu registro e tenha acesso a todos os documentos do
 					site.
 				</TextBlock>
 				<RegisterForm />

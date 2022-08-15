@@ -3,6 +3,7 @@ import type { InputRef } from 'antd';
 import { Button, Input, Space, Table, Tag, Popconfirm } from 'antd';
 import type { ColumnsType, ColumnType } from 'antd/lib/table';
 import type { FilterConfirmProps } from 'antd/lib/table/interface';
+
 import React, {
 	useRef,
 	useState,
@@ -167,19 +168,27 @@ export function Dashboard({ files }) {
 			),
 	});
 
+	/* Largura dos Breakpoints
+		xs: '(max-width: 575px)',
+		sm: '(min-width: 576px)',
+		md: '(min-width: 768px)',
+		lg: '(min-width: 992px)',
+		xl: '(min-width: 1200px)',
+		xxl: '(min-width: 1600px)',	
+	*/
 	const columns: ColumnsType<DataType> = [
 		{
 			title: 'Tipo',
 			dataIndex: 'icon',
 			key: 'icon',
-			width: '5%',
+			width: 70,
 			align: 'center',
 		},
 		{
 			title: 'Titulo',
 			dataIndex: 'title',
 			key: 'title',
-			width: '30%',
+			width: 300,
 			...getColumnSearchProps('title'),
 		},
 
@@ -187,7 +196,8 @@ export function Dashboard({ files }) {
 			title: 'Nome do Arquivo',
 			dataIndex: 'name',
 			key: 'name',
-			width: '30%',
+			width: 300,
+			responsive: ['md'],
 			...getColumnSearchProps('name'),
 		},
 
@@ -195,7 +205,8 @@ export function Dashboard({ files }) {
 			title: 'Tamanho',
 			dataIndex: 'size',
 			key: 'size',
-			width: '15%',
+			width: 100,
+			responsive: ['lg'],
 			sorter: (a, b) => a.size - b.size,
 			sortDirections: ['descend', 'ascend'],
 			render: (_, { size }) => <>{size} kb</>,
@@ -204,8 +215,8 @@ export function Dashboard({ files }) {
 		{
 			title: 'Download',
 			key: 'operation',
-			fixed: 'right',
-			width: 100,
+			align: 'center',
+			width: 120,
 			render: (_, record: { key: React.Key; title: string }) => {
 				if (data.length >= 1) {
 					console.log('Inicio dos dados da linha');
@@ -217,6 +228,7 @@ export function Dashboard({ files }) {
 					return (
 						<Button
 							title='Download de arquivo'
+							type='primary'
 							onClick={() => handleDownload(record.key)}
 						>
 							Download
@@ -228,10 +240,17 @@ export function Dashboard({ files }) {
 			},
 		},
 	];
-
+	const element = '';
 	return (
 		<Container>
-			<Table className='tableData' columns={columns} dataSource={data} />
+			<>
+				<Table
+					className='tableData'
+					id='tableData'
+					columns={columns}
+					dataSource={data}
+				/>
+			</>
 		</Container>
 	);
 }
