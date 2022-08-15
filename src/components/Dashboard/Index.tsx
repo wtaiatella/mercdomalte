@@ -1,57 +1,54 @@
 import { SearchOutlined } from '@ant-design/icons';
 import type { InputRef } from 'antd';
-import { Button, Input, Space, Table, Tag, Popconfirm, Modal } from 'antd';
+import { Button, Input, Space, Table, Tag, Popconfirm } from 'antd';
 import type { ColumnsType, ColumnType } from 'antd/lib/table';
 import type { FilterConfirmProps } from 'antd/lib/table/interface';
-import React, { useRef, useState, ReactNode } from 'react';
+
+import React, {
+	useRef,
+	useState,
+	ReactNode,
+	useEffect,
+	useContext,
+} from 'react';
 import Highlighter from 'react-highlight-words';
+import { UserContext } from '../../contexts/UserContext';
+import { s3getDownloadeSignedUrl } from '../../services/awsService';
 import { Container } from './styles';
 
 interface DataType {
 	key: string;
 	icon: ReactNode;
 	title: string;
+	name: string;
 	size: number;
-	categories: string[];
 }
 
 type DataIndex = keyof DataType;
 
-export function Dashboard() {
+export function Dashboard({ files }) {
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef<InputRef>(null);
+	const { urlBackendApi } = useContext(UserContext);
 
-	const [data, setData] = useState<DataType[]>([
-		{
-			key: '1',
-			icon: <SearchOutlined />,
-			title: 'John Brown',
-			size: 32,
-			categories: ['Insumos', 'Maltes'],
-		},
-		{
-			key: '2',
-			icon: <SearchOutlined />,
-			title: 'Joe Black',
-			size: 42,
-			categories: ['Insumos'],
-		},
-		{
-			key: '3',
-			icon: <SearchOutlined />,
-			title: 'Jim Green',
-			size: 32,
-			categories: ['Insumos'],
-		},
-		{
-			key: '4',
-			icon: <SearchOutlined />,
-			title: 'Jim Red',
-			size: 32,
-			categories: ['Insumos'],
-		},
-	]);
+	console.log('dentro do dashboard');
+	console.log(files);
+
+	const [data, setData] = useState<DataType[]>([]);
+
+	useEffect(() => {
+		const fileList = files.map((file) => {
+			return {
+				key: file.id,
+				icon: <SearchOutlined />,
+				title: file.title,
+				name: file.name,
+				size: file.size / 1000,
+			};
+		});
+		setData(fileList);
+	}, [files]);
 
 	const handleSearch = (
 		selectedKeys: string[],
@@ -68,12 +65,15 @@ export function Dashboard() {
 		setSearchText('');
 	};
 
-	const handleDownload = (key: React.Key) => {
-		const downloadData = data.filter((item) => item.key === key);
-		console.log(downloadData[0].title);
-		<Popconfirm title='Download de arquivo' onConfirm={() => {}}>
-			<a>Sim</a>
-		</Popconfirm>;
+	const handleDownload = async (key: React.Key) => {
+		const downloadfile = data.filter((item) => item.key === key);
+		console.log(downloadfile[0].name);
+		const url = await s3getDownloadeSignedUrl(
+			downloadfile[0].name,
+			urlBackendApi
+		);
+		open(url.slice(1, -1), '_blank');
+		console.log(url);
 	};
 
 	const getColumnSearchProps = (
@@ -168,68 +168,89 @@ export function Dashboard() {
 			),
 	});
 
+	/* Largura dos Breakpoints
+		xs: '(max-width: 575px)',
+		sm: '(min-width: 576px)',
+		md: '(min-width: 768px)',
+		lg: '(min-width: 992px)',
+		xl: '(min-width: 1200px)',
+		xxl: '(min-width: 1600px)',	
+	*/
 	const columns: ColumnsType<DataType> = [
 		{
 			title: 'Tipo',
 			dataIndex: 'icon',
 			key: 'icon',
-			width: '5%',
+			width: 70,
 			align: 'center',
 		},
 		{
 			title: 'Titulo',
 			dataIndex: 'title',
 			key: 'title',
-			width: '48%',
+			width: 300,
 			...getColumnSearchProps('title'),
 		},
 
 		{
-			title: 'Size',
+			title: 'Nome do Arquivo',
+			dataIndex: 'name',
+			key: 'name',
+			width: 300,
+			responsive: ['md'],
+			...getColumnSearchProps('name'),
+		},
+
+		{
+			title: 'Tamanho',
 			dataIndex: 'size',
 			key: 'size',
-			width: '10%',
-			sorter: (a, b) => a.categories.length - b.categories.length,
+			width: 100,
+			responsive: ['lg'],
+			sorter: (a, b) => a.size - b.size,
 			sortDirections: ['descend', 'ascend'],
 			render: (_, { size }) => <>{size} kb</>,
 		},
-		{
-			title: 'Categoria',
-			dataIndex: 'categories',
-			key: 'categories',
-			...getColumnSearchProps('categories'),
 
-			render: (_, { categories }) => (
-				<>
-					{categories.map((category) => {
-						return <Tag key={category}>{category}</Tag>;
-					})}
-				</>
-			),
-		},
 		{
-			title: 'Action',
+			title: 'Download',
 			key: 'operation',
-			fixed: 'right',
-			width: 100,
-			render: (_, record: { key: React.Key }) =>
-				data.length >= 1 ? (
-					<Button
-						type='link'
-						size='small'
-						onClick={() => {
-							handleDownload(record.key);
-						}}
-					>
-						Download
-					</Button>
-				) : null,
+			align: 'center',
+			width: 120,
+			render: (_, record: { key: React.Key; title: string }) => {
+				if (data.length >= 1) {
+					console.log('Inicio dos dados da linha');
+					console.log(data);
+					console.log(record);
+					console.log(record.key);
+					console.log(record.title);
+
+					return (
+						<Button
+							title='Download de arquivo'
+							type='primary'
+							onClick={() => handleDownload(record.key)}
+						>
+							Download
+						</Button>
+					);
+				} else {
+					return null;
+				}
+			},
 		},
 	];
-
+	const element = '';
 	return (
 		<Container>
-			<Table className='tableData' columns={columns} dataSource={data} />
+			<>
+				<Table
+					className='tableData'
+					id='tableData'
+					columns={columns}
+					dataSource={data}
+				/>
+			</>
 		</Container>
 	);
 }

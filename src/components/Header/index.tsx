@@ -11,7 +11,7 @@ export function Header() {
 
 	return (
 		<Container>
-			<Link href='/'>
+			<Link href='/' className='logo'>
 				<a>
 					<Image
 						src='/images/logo.png'
@@ -27,11 +27,10 @@ export function Header() {
 				placeholder='Procure seu arquivo'
 				allowClear
 				onChange={onSearch}
-				style={{
-					width: 600,
-				}}
 			/>
-			<SignInButton />
+			<div className='signin'>
+				<SignInButton />
+			</div>
 		</Container>
 	);
 }

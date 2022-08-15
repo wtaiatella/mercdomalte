@@ -62,9 +62,10 @@ button {
 }
 
 
+
 `;
 
-export const Container = styled.main`
+export const Container = styled.div`
 	background-image: url('/images/bg-site.jpg');
 	background-repeat: repeat;
 	height: 100vh;

@@ -1,10 +1,18 @@
 import { SearchOutlined } from '@ant-design/icons';
-import type { InputRef } from 'antd';
+import { InputRef, message } from 'antd';
 import { Button, Input, Space, Table, Tag, Popconfirm, Modal } from 'antd';
 import type { ColumnsType, ColumnType } from 'antd/lib/table';
 import type { FilterConfirmProps } from 'antd/lib/table/interface';
-import React, { useRef, useState, ReactNode } from 'react';
+import React, {
+	useRef,
+	useState,
+	ReactNode,
+	useEffect,
+	useContext,
+} from 'react';
 import Highlighter from 'react-highlight-words';
+import { UserContext } from '../../contexts/UserContext';
+import { s3DeleteFile } from '../../services/awsService';
 
 import { Container } from './styles';
 
@@ -12,8 +20,8 @@ interface DataType {
 	key: string;
 	icon: ReactNode;
 	title: string;
+	name: string;
 	size: number;
-	categories: string[];
 }
 
 type DataIndex = keyof DataType;
@@ -22,37 +30,39 @@ export function UserDashboard() {
 	const [searchText, setSearchText] = useState('');
 	const [searchedColumn, setSearchedColumn] = useState('');
 	const searchInput = useRef<InputRef>(null);
+	const { urlBackendApi, session } = useContext(UserContext);
 
-	const [data, setData] = useState<DataType[]>([
-		{
-			key: '1',
-			icon: <SearchOutlined />,
-			title: 'John Brown',
-			size: 32,
-			categories: ['Insumos', 'Maltes'],
-		},
-		{
-			key: '2',
-			icon: <SearchOutlined />,
-			title: 'Joe Black',
-			size: 42,
-			categories: ['Insumos'],
-		},
-		{
-			key: '3',
-			icon: <SearchOutlined />,
-			title: 'Jim Green',
-			size: 32,
-			categories: ['Insumos'],
-		},
-		{
-			key: '4',
-			icon: <SearchOutlined />,
-			title: 'Jim Red',
-			size: 32,
-			categories: ['Insumos'],
-		},
-	]);
+	const [data, setData] = useState<DataType[]>([]);
+
+	useEffect(() => {
+		console.log(`UseEffect do dashboard de usuario`);
+		const { id } = session;
+		console.log(id);
+
+		console.log(`${urlBackendApi}/file/user/${id}`);
+
+		const aux = async () => {
+			const responsefiles = await fetch(
+				`${urlBackendApi}/file/user/${id}`
+			);
+
+			const files = await responsefiles.json();
+			console.log(`Aqui estão os files do site`);
+			console.log(files);
+
+			const fileList = files.map((file) => {
+				return {
+					key: file.id,
+					icon: <SearchOutlined />,
+					title: file.title,
+					name: file.name,
+					size: file.size / 1000,
+				};
+			});
+			setData(fileList);
+		};
+		aux();
+	}, []);
 
 	const handleSearch = (
 		selectedKeys: string[],
@@ -69,12 +79,24 @@ export function UserDashboard() {
 		setSearchText('');
 	};
 
-	const handleDelete = (key: React.Key) => {
-		const downloadData = data.filter((item) => item.key === key);
-		console.log(downloadData[0].title);
-		<Popconfirm title='Download de arquivo' onConfirm={() => {}}>
-			<a>Sim</a>
-		</Popconfirm>;
+	const handleDelete = async (key: React.Key) => {
+		const deleteFile = data.filter((item) => item.key === key);
+		console.log(deleteFile[0].title);
+
+		const deletedFile = await s3DeleteFile(
+			deleteFile[0].name,
+			urlBackendApi
+		);
+		console.log(deletedFile);
+		if (deletedFile.id) {
+			message.success('Arquivo apagado com sucesso', 10);
+			const fileList = data.filter((file) => {
+				return file.name != deleteFile[0].name;
+			});
+			setData(fileList);
+		} else {
+			message.success('Erro ao apagar o arquivo', 10);
+		}
 	};
 
 	const getColumnSearchProps = (
@@ -181,49 +203,47 @@ export function UserDashboard() {
 			title: 'Titulo',
 			dataIndex: 'title',
 			key: 'title',
-			width: '48%',
+			width: '30%',
 			...getColumnSearchProps('title'),
 		},
 
 		{
-			title: 'Size',
+			title: 'Nome do Arquivo',
+			dataIndex: 'name',
+			key: 'name',
+			width: '30%',
+			...getColumnSearchProps('name'),
+		},
+
+		{
+			title: 'Tamanho',
 			dataIndex: 'size',
 			key: 'size',
-			width: '10%',
-			sorter: (a, b) => a.categories.length - b.categories.length,
+			width: '15%',
+			sorter: (a, b) => a.size - b.size,
 			sortDirections: ['descend', 'ascend'],
 			render: (_, { size }) => <>{size} kb</>,
 		},
 		{
-			title: 'Categoria',
-			dataIndex: 'categories',
-			key: 'categories',
-			...getColumnSearchProps('categories'),
-
-			render: (_, { categories }) => (
-				<>
-					{categories.map((category) => {
-						return <Tag key={category}>{category}</Tag>;
-					})}
-				</>
-			),
-		},
-		{
-			title: 'Action',
+			title: 'Apagar',
 			key: 'operation',
 			fixed: 'right',
 			width: 100,
-			render: (_, record: { key: React.Key }) =>
+			render: (_, record: { key: React.Key; title: string }) =>
 				data.length >= 1 ? (
-					<Button
-						type='link'
-						size='small'
-						onClick={() => {
+					<Popconfirm
+						title='Confirma apagar o arquivo?'
+						placement='topRight'
+						onConfirm={() => {
 							handleDelete(record.key);
 						}}
+						okText='Sim'
+						cancelText='Cancelar'
 					>
-						Apagar
-					</Button>
+						<Button type='link' size='small'>
+							Apagar
+						</Button>
+					</Popconfirm>
 				) : null,
 		},
 	];

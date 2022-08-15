@@ -19,10 +19,6 @@ export const Container = styled.div`
 		align-items: center;
 	}
 
-	.form-register-now {
-		margin-left: 1.5rem;
-	}
-
 	@media (max-width: 575px) {
 		.ant-col-offset-5 {
 			margin-left: 0;

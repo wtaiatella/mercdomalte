@@ -1,45 +1,79 @@
-import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox, message, Alert } from 'antd';
 
 import { LockOutlined } from '@ant-design/icons';
 import { MdOutlineEmail } from 'react-icons/md';
 
+import LostPaswordModal from '../../components/LostPasswordModal';
+
 import { Container } from './styles';
+
 import { UserContext } from '../../contexts/UserContext';
-import LostPaswordModal from '../LostPasswordModal';
-import { Title } from '../Common/Title';
-import { TextBlock } from '../Common/TextBlock';
 
 export default function LoginForm() {
-	const { isModalVisible, setIsModalVisible } = useContext(UserContext);
+	const {
+		isModalVisible,
+		setIsModalVisible,
+		session,
+		setSession,
+		urlBackendApi,
+	} = useContext(UserContext);
 	const router = useRouter();
 
 	const showModal = () => {
 		setIsModalVisible(true);
 	};
 
-	const onFinish = (values: any) => {
+	const onFinish = async (values: any) => {
 		console.log('Received values of form: ', values);
-		router.push('/myaccount');
+		const { email, password } = values;
+
+		const response = await fetch(`${urlBackendApi}/user/login`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Accept: 'application/json',
+			},
+			body: JSON.stringify({
+				email,
+				password,
+			}),
+		});
+
+		const resp = await response.json();
+		console.log(resp);
+
+		if (resp.status) {
+			const { name, accessToken, id } = resp.data;
+			const code = resp.code;
+			setSession({
+				accessToken,
+				email,
+				name,
+				code,
+				id,
+			});
+			localStorage.setItem('token', accessToken);
+			router.push('/myaccount');
+		} else {
+			const code = resp.code;
+			setSession({
+				...session,
+				code,
+			});
+		}
 	};
 
 	const onFinishFailed = (errorInfo: any) => {
 		console.log('Failed:', errorInfo);
-		router.push('/myaccount');
 	};
 
 	return (
 		<>
 			<Container>
-				<Title>Identificação do usuário</Title>
-				<TextBlock>
-					Faça o seu login e tenha acesso a todos os documentos do
-					site.
-				</TextBlock>
 				<Form
 					name='login'
 					className='login-form'
@@ -67,6 +101,7 @@ export default function LoginForm() {
 							}
 							placeholder='Digite seu e-mail'
 							allowClear
+							autoComplete='login-form email'
 						/>
 					</Form.Item>
 					<Form.Item
@@ -85,27 +120,8 @@ export default function LoginForm() {
 							}
 							placeholder='Password'
 							allowClear
+							autoComplete='login-form password'
 						/>
-					</Form.Item>
-
-					<Form.Item
-						className='formOptions'
-						wrapperCol={{ offset: 5 }}
-					>
-						<Form.Item
-							name='remember'
-							valuePropName='checked'
-							noStyle
-						>
-							<Checkbox>Lembrar-me</Checkbox>
-						</Form.Item>
-
-						<Button
-							onClick={showModal}
-							className='login-form-forgot'
-						>
-							Esqueceu a senha?
-						</Button>
 					</Form.Item>
 
 					<Form.Item wrapperCol={{ offset: 5 }}>
@@ -114,11 +130,61 @@ export default function LoginForm() {
 							htmlType='submit'
 							className='login-form-button'
 						>
-							Log in
+							Login
 						</Button>
-						<Link href='/register'>Registre agora!</Link>
+						<Link href='/register'>
+							<a className='form-register-now'>
+								Não possui registro ainda? Clique aqui!
+							</a>
+						</Link>
 					</Form.Item>
 				</Form>
+				{session.code === 404 ? (
+					<Alert
+						message='Usuario não encontrado'
+						showIcon
+						type='error'
+						closable
+						action={
+							<Button
+								size='small'
+								danger
+								onClick={() => router.push('/register')}
+							>
+								Registre-se agora
+							</Button>
+						}
+						onClose={() => {
+							const code = 30;
+							setSession({
+								code,
+							});
+						}}
+					/>
+				) : (
+					''
+				)}
+				{session.code === 401 ? (
+					<Alert
+						message='Senha incorreta, digite novamente ou clique ao lado para atualizar.'
+						showIcon
+						type='error'
+						closable
+						action={
+							<Button size='small' danger onClick={showModal}>
+								Atualizar senha
+							</Button>
+						}
+						onClose={() => {
+							const code = 40;
+							setSession({
+								code,
+							});
+						}}
+					/>
+				) : (
+					''
+				)}
 			</Container>
 
 			<LostPaswordModal isOpen={isModalVisible} />
