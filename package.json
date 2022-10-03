@@ -7,9 +7,9 @@
 	"license": "MIT",
 	"private": true,
 	"scripts": {
-		"dev": "next",
+		"dev": "next -p 3100",
 		"build": "next build",
-		"start": "next start"
+		"start": "next start -p 3100"
 	},
 	"dependencies": {
 		"@ant-design/icons": "^4.7.0",
