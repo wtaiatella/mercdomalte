@@ -1,6 +1,6 @@
 {
 	"name": "Mercado do Malte",
-	"imgUrl": "https://www.mercadodomalte.com.br/images/portifolio.png",
+	"imgUrl": "/img/sites/portifolio-mdm.png",
 	"techs": ["React", "Next", "AWS", "Typescript", "BackEnd", "API"],
 	"type": "Own Project",
 	"website": "https://www.mercadodomalte.com.br",
