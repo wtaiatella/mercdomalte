@@ -132,10 +132,8 @@ export default function LoginForm() {
 						>
 							Login
 						</Button>
-						<Link href='/register'>
-							<a className='form-register-now'>
-								Não possui registro ainda? Clique aqui!
-							</a>
+						<Link href='/register' className='form-register-now'>
+							Não possui registro ainda? Clique aqui!
 						</Link>
 					</Form.Item>
 				</Form>

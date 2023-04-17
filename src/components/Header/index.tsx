@@ -12,14 +12,12 @@ export function Header() {
 	return (
 		<Container>
 			<Link href='/' className='logo'>
-				<a>
-					<Image
-						src='/images/logo.png'
-						alt='logo Mercado do Malte'
-						width='107'
-						height='87'
-					/>
-				</a>
+				<Image
+					src='/images/logo.png'
+					alt='logo Mercado do Malte'
+					width='107'
+					height='87'
+				/>
 			</Link>
 
 			<Search
