@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import Image from 'next/image';
 import { Title } from '@/components/Common/Title';
 import { TextBlock } from '@/components/Common/TextBlock';
 import { Dashboard } from '@/components/Dashboard/Index';
