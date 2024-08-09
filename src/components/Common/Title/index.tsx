@@ -1,5 +1,5 @@
-import { Container } from './styles';
+import { Container } from "./styles";
 
-export function Title({ children }) {
-	return <Container>{children}</Container>;
+export function Title({ children }: { children: React.ReactNode }) {
+  return <Container>{children}</Container>;
 }
