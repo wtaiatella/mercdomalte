@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Logout = styled.div`
+export const LogoutBlock = styled.div`
   padding: 1rem 0;
   display: flex;
   align-items: center;
@@ -29,9 +29,5 @@ export const Logout = styled.div`
     span {
       margin: 0 0.5rem;
     }
-  }
-
-  svg {
-    font-size: 35px;
   }
 `;

@@ -1,5 +1,5 @@
-import { Container } from './styles';
+import { Container } from "./styles";
 
-export function TextBlock({ children }) {
-	return <Container>{children}</Container>;
+export function TextBlock({ children }: { children: React.ReactNode }) {
+  return <Container>{children}</Container>;
 }

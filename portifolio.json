@@ -1,0 +1,8 @@
+{
+	"name": "Mercado do Malte",
+	"imgUrl": "/img/sites/portifolio-mdm.png",
+	"techs": ["React", "Next", "AWS", "Typescript", "BackEnd", "API"],
+	"type": "Own Project",
+	"website": "https://www.mercadodomalte.com.br",
+	"repo": "https://github.com/wtaiatella/mercdomalte-frontend"
+}

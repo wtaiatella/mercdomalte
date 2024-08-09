@@ -1,40 +1,31 @@
-import { ThemeProvider } from 'styled-components';
-import { GlobalStyle, Container, Content } from '../styles/global';
-import { Header } from '../components/Header';
-import 'antd/dist/antd.less';
-import 'antd/dist/antd.variable.min.css';
-import { UserStorage } from '../contexts/UserContext';
-
+import type { AppProps } from 'next/app';
 import { ConfigProvider } from 'antd';
+import { GlobalStyle, Container, Content } from '../styles/global';
+import { UserStorage } from '../contexts/UserContext';
+import { Header } from '../components/Header';
 
-const theme = {
-	colors: {
-		primary: '',
-	},
-};
-
-ConfigProvider.config({
-	theme: {
-		primaryColor: '#6E3435',
-	},
-});
-
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }: AppProps) {
 	return (
 		<>
 			<UserStorage>
 				<GlobalStyle />
-				<ThemeProvider theme={theme}>
-					<ConfigProvider>
-						<Container>
-							<Content>
-								<Header />
-								<Component {...pageProps} />
-							</Content>
-						</Container>
-					</ConfigProvider>
-				</ThemeProvider>
+				<ConfigProvider
+					theme={{
+						token: {
+							colorPrimary: '#6E3435',
+						},
+					}}
+				>
+					<Container>
+						<Content>
+							<Header />
+							<Component {...pageProps} />
+						</Content>
+					</Container>
+				</ConfigProvider>
 			</UserStorage>
 		</>
 	);
+
+	//<Component {...pageProps} />
 }
