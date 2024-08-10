@@ -6,14 +6,14 @@ interface UserContextType {
   urlBackendApi: string;
   setUrlBackendApi: React.Dispatch<React.SetStateAction<string>>;
   session: {
-    accesToken: string;
+    accessToken: string;
     email: string;
     name: string;
     code: number;
   };
   setSession: React.Dispatch<
     React.SetStateAction<{
-      accesToken: string;
+      accessToken: string;
       email: string;
       name: string;
       code: number;
@@ -27,7 +27,7 @@ export const UserContext = createContext<UserContextType>({
   urlBackendApi: "",
   setUrlBackendApi: () => {},
   session: {
-    accesToken: "",
+    accessToken: "",
     email: "",
     name: "",
     code: 0,
@@ -47,7 +47,7 @@ export const UserStorage: FC<UserStorageProps> = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [urlBackendApi, setUrlBackendApi] = useState("");
   const [session, setSession] = useState({
-    accesToken: "",
+    accessToken: "",
     email: "",
     name: "",
     code: 0,

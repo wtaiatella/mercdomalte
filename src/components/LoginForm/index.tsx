@@ -30,6 +30,7 @@ export default function LoginForm() {
 
   const onLoginSubmit = async (values: any) => {
     console.log("Received values of form: ", values);
+    console.log("urlBackendApi: ", urlBackendApi);
     const { email, password } = values;
 
     const response = await fetch(`${urlBackendApi}/user/login`, {
@@ -48,19 +49,16 @@ export default function LoginForm() {
     console.log(resp);
 
     if (resp.status) {
-      const {
-        name,
-        accesToken,
-        id,
-      }: { name: string; accesToken: string; id: string } = resp.data;
+      const { name, accessToken }: { name: string; accessToken: string } =
+        resp.data;
       const code = resp.code;
       setSession({
-        accesToken,
+        accessToken,
         email,
         name,
         code,
       });
-      localStorage.setItem("token", accesToken);
+      localStorage.setItem("token", accessToken);
       router.push("/myaccount");
     } else {
       const code = resp.code;
