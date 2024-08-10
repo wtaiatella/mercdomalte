@@ -47,15 +47,15 @@ export default function RegisterForm() {
       console.log(resp);
 
       if (resp.status) {
-        const { accesToken } = resp.data;
+        const { accessToken } = resp.data;
         const code = resp.code;
         setSession({
-          accesToken,
+          accessToken,
           email,
           name,
           code,
         });
-        localStorage.setItem("token", accesToken);
+        localStorage.setItem("token", accessToken);
         router.push("/myaccount");
       } else {
         const code = resp.code;

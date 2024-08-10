@@ -15,19 +15,19 @@ export const Logout = ({ user }: { user: string }) => {
   };
 
   const handleLogout = () => {
-    const accesToken = "";
+    const accessToken = "";
     const email = "";
     const name = "";
     const code = 0;
 
     setSession({
-      accesToken,
+      accessToken,
       email,
       name,
       code,
     });
 
-    localStorage.setItem("token", accesToken);
+    localStorage.setItem("token", accessToken);
     router.push("/");
   };
 

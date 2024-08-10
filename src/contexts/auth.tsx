@@ -23,12 +23,12 @@ export const AdminAuthProvider = ({ children }: IAdminAuthProvider) => {
       console.log("auth");
       console.log(session);
 
-      if (session.accesToken) {
+      if (session.accessToken) {
         const response = await fetch(`${urlBackendApi}/auth/check`, {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            Authorization: `Bearer ${session.accesToken}`,
+            Authorization: `Bearer ${session.accessToken}`,
           },
         });
         const result = await response.json();
